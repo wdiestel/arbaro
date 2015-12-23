@@ -1,0 +1,141 @@
+Arbaro is a Java-implementation of the tree generating algorithm described
+in Jason Weber & Joseph Penn: "Creation and Rendering of Realistic Trees".
+It is reading in XML-files with the parameters of the trees and
+writing out povray code.
+
+The algorithm creates very realistic trees, when seen from a distance 
+> 50m for normal screen resolutions, but is mathematically quite complex. 
+It supports many tree species including palms and cacti.
+
+-------------------------------------------------------------------------
+
+Your first tree made with arbaro:
+
+1. You need Java 1.4.x and Povray 3.5 be installed. You could use
+   an older Java version if you got the generic XML-processing package
+   JAXP separately.
+
+2. a) Using the GUI invoke
+
+      cd <arbaro directory> 
+      java -jar arbaro_gui.jar
+
+   Open quaking_aspen.xml and choose Create tree... from the menu.
+   Check the "POV scene file option" and hit "Start". 
+
+   b) Using the command line version, call something like
+
+     cd <arbaro directory>
+     java -jar arbaro.jar -p pov/quaking_aspen.pov -o \
+           pov/quaking_aspen.inc trees/quaking_aspen.xml 
+
+
+   This should create two files in the pov directory:
+     quaking_aspen.inc - a Povray include file with the definition 
+                         of the aspen tree (stems and leaves)
+     quaking_aspen.pov - a simple Povray scene with the tree
+
+3. Call POVRay:
+
+     cd pov
+     povray +h600 +w400 quaking_aspen.pov
+
+------------------------------------------------------------------------------
+
+Some other examples of invoking the command line version of Arbaro:
+
+a) to get help: 
+
+
+     java -jar arbaro.jar -h
+
+
+b) for complex trees you should give the Java machine enough memory:
+
+
+     java -Xms100m -Xmx200m -jar arbaro.jar \
+          < trees/weeping_willow.xml > pov/weeping_willow.inc
+
+
+c) you can fine tune the mesh resolution and to what stem levels
+   normals are added to get a smooth look by the -m parameter:
+
+   smooth look:
+
+     java -jar arbaro.jar -m 0.9 < trees/euphorbia.xml \
+          > pov/euphorbia.inc
+
+
+   angular stems:
+
+     java -jar arbaro.jar -m 0.2 < trees/shave-grass.xml > pov/shave-grass.inc
+
+
+   (There is a parameter Smooth with the same meaning for species
+   which look best with a specific smooth value)
+
+------------------------------------------------------------------------------
+
+IF IT DOESN'T WORK
+
+It doesn't work, what I'm doing wrong?
+
+1. Do you use the correct version of Java?
+
+     java -version 
+
+   should say something about version 1.4.x. May be you have
+   to add the full path of your Java executable on the beginning
+   of the command line.
+
+2. Did you change to the Arbaro directory? This is the directory
+   with arbaro.jar and arbaro_gui.jar in it. 
+
+3. If you are a Windows user, you should use the back slash \ instead
+   of the slash / in path names.
+
+I got the XXX.inc file what to do with it?
+
+   You have to include it in a POVRay scene and render this scene.
+   You can create an example POVRay scene (with the -p option)
+   and render it with
+
+     povray +w400 +h600 XXX.pov
+
+I got a tree image, but it's too large.
+  
+   You have to render the example scene with height to width ratio of 1.5,
+   e.g. 600 pixels heigh and 400 pixels wide. If you like another format you
+   can adjust the WIDTH variable in the .pov file
+
+I get an out of memory error.
+  
+   You should give the Java engine more memory, e.g. 100MB initial, 200MB
+   max. heap size with 
+
+         java -Xms100m -Xmx200m ...
+  
+I have another problem.
+
+   Please mail me. I will try to help you.
+
+------------------------------------------------------------------------------
+
+Compiling from sources. If you are a Unix usere, this should 
+work for you:
+
+            ./jc && ./jcg && ./jj 
+
+------------------------------------------------------------------------------
+
+Questions, patches, help offers, chocolade, ... send to <diestel@steloj.de>
+
+
+
+
+
+
+
+
+
+

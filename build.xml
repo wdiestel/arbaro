@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <project name="Arbaro" default="jars" basedir=".">
+
+ <property name="release" value="1_9_6"/>
+ 	
+ <property name="src" location="src"/>
+ <property name="build" location="bin"/>
+ <property name="dist"  location="."/>
+ <property name="doc" location="doc"/>
+
+ <target name="init">
+ 	   <tstamp/>
+ 	   <mkdir dir="${build}"/>
+	   <mkdir dir="${doc}"/>
+ </target>
+  
+  <target name="compile" depends="init" description="compile java sources">
+  	 <javac srcdir="${src}" destdir="${build}"/>
+  </target>
+ 	
+  <target name="jars" depends="compile" description="make jar files">
+  	<jar destfile="${dist}/arbaro.jar" manifest="src/Manifest_gui" basedir="${build}">
+  		<include name="net/sourceforge/arbaro/arbaro_gui.class"/>
+  		<include name="net/sourceforge/arbaro/export/*.class"/>
+  		<include name="net/sourceforge/arbaro/mesh/*.class"/>
+		<include name="net/sourceforge/arbaro/meshfactory/*.class"/>
+  	  	<include name="net/sourceforge/arbaro/params/*.class"/>
+  	  	<include name="net/sourceforge/arbaro/transformation/*.class"/>
+  	  	<include name="net/sourceforge/arbaro/tree/*.class"/>
+  	  	<include name="net/sourceforge/arbaro/gui/*.class"/>
+  	</jar>
+    	<jar destfile="${dist}/arbaro.jar" update="yes" basedir="${src}">
+  	  	<include name="net/sourceforge/arbaro/gui/images/*"/>
+  	  	<include name="net/sourceforge/arbaro/gui/images/actions/*"/>
+  	</jar>
+  	
+  	<jar destfile="${dist}/arbaro_cmd.jar" manifest="src/Manifest_cmd" basedir="bin">
+		<include name="net/sourceforge/arbaro/arbaro.class"/>
+		<include name="net/sourceforge/arbaro/export/*.class"/>
+		<include name="net/sourceforge/arbaro/mesh/*.class"/>
+		<include name="net/sourceforge/arbaro/meshfactory/*.class"/>
+	  	<include name="net/sourceforge/arbaro/params/*.class"/>
+	  	<include name="net/sourceforge/arbaro/transformation/*.class"/>
+	  	<include name="net/sourceforge/arbaro/tree/*.class"/>
+  	</jar>
+
+  </target>
+ 	
+ <target name="doc" depends="init" description="create java documentation for the sources">
+ 	<javadoc sourcepath="${src}" destdir="${doc}" packagenames="net.sourceforge.arbaro.*"/>
+ </target>
+ 	
+  <target name="dist" depends="jars, doc" description="creates the distribution">
+  	<zip destfile="${dist}/arbaro_${release}.zip" basedir="${dist}">
+		<include name="arbaro.jar"/>
+		<include name="arbaro_cmd.jar"/>
+		<include name="trees/*.xml"/>
+		<include name="trees/test/feather.xml"/>
+		<include name="trees/test/bottle_brush.xml"/>
+ 		<include name="pov/arbaro.inc"/>
+		<include name="build.xml"/>
+		<include name="COPYING"/>
+		<include name="README"/>
+		<include name="src/**/*"/>
+		<include name="test/**/*"/>
+   		<include name="doc/**/*"/>
+  	</zip>
+  </target>
+ 	
+ 	
+ 	
+</project>
+

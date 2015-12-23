@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jardesc>
+    <jar path="/home/wolfram/workspace.alt/Arbaro/arbaro.jar"/>
+    <options overwrite="false" compress="true" exportErrors="true" exportWarnings="true" saveDescription="true" descriptionLocation="/Arbaro/arbaro.jardesc" useSourceFolders="false" buildIfNeeded="true" includeDirectoryEntries="false" storeRefactorings="false"/>
+    <storedRefactorings structuralOnly="false" deprecationInfo="true"/>
+    <selectedProjects/>
+    <manifest manifestVersion="1.0" usesManifest="true" reuseManifest="false" saveManifest="false" generateManifest="false" manifestLocation="/Arbaro/src/Manifest_gui">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportOutputFolder="false" exportJavaFiles="false">
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.transformation"/>
+        <file path="/Arbaro/src/Manifest_gui"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.mesh"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.export{PovSceneExporter.java"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.export{DXFExporter.java"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.export{OBJExporter.java"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.tree"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.export{POVConeExporter.java"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.params"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.export{Exporter.java"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.export{Progress.java"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.gui.images.actions"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.gui"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro{arbaro_gui.java"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.export{POVMeshExporter.java"/>
+        <javaElement handleIdentifier="=Arbaro/src&lt;net.sourceforge.arbaro.gui.images"/>
+    </selectedElements>
+</jardesc>

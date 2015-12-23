@@ -1,0 +1,74 @@
+<?xml version='1.0' ?>
+
+<arbaro>
+  <species name='barley'>
+    <!-- general params -->
+    <param name='Shape' value='3'/>
+    <param name='Levels' value='2'/>
+    <param name='Scale' value='0.6'/>
+    <param name='ScaleV' value='0.1'/>
+    <param name='BaseSize' value='0.85'/>
+    <param name='Ratio' value='0.0020'/>
+    <param name='RatioPower' value='0.5'/>
+    <param name='Flare' value='0.0'/>
+    <param name='Lobes' value='0'/>
+    <param name='LobeDepth' value='0.0'/>
+    <param name='Smooth' value='0.1'/>
+    <param name='Leaves' value='-1'/>
+    <param name='LeafShape' value='sphere'/>
+    <param name='LeafScale' value='0.01'/>
+    <param name='LeafScaleX' value='0.5'/>
+    <param name='LeafQuality' value='1.0'/>
+    <param name='LeafStemLen' value='-11.0'/>
+    <param name='LeafDistrib' value='3'/>
+    <param name='LeafBend' value='0.0'/>
+    <param name='AttractionUp' value='0.0'/>
+    <param name='PruneRatio' value='0.0'/>
+    <param name='PrunePowerLow' value='0.5'/>
+    <param name='PrunePowerHigh' value='0.5'/>
+    <param name='PruneWidth' value='0.5'/>
+    <param name='PruneWidthPeak' value='0.5'/>
+    <param name='0Scale' value='1.0'/>
+    <param name='0ScaleV' value='0.0'/>
+    <param name='0BaseSplits' value='0'/>
+    <!-- level 0 -->
+    <param name='0DownAngle' value='0.0'/>
+    <param name='0DownAngleV' value='40.0'/>
+    <param name='0Rotate' value='0.0'/>
+    <param name='0RotateV' value='80.0'/>
+    <param name='0Branches' value='19'/>
+    <param name='0BranchDist' value='0.1'/>
+    <param name='0Length' value='1.0'/>
+    <param name='0LengthV' value='0.0'/>
+    <param name='0Taper' value='0.5'/>
+    <param name='0SegSplits' value='0.0'/>
+    <param name='0SplitAngle' value='0.0'/>
+    <param name='0SplitAngleV' value='0.0'/>
+    <param name='0CurveRes' value='49'/>
+    <param name='0Curve' value='20.0'/>
+    <param name='0CurveBack' value='80.0'/>
+    <param name='0CurveV' value='40.0'/>
+    <!-- level 1 -->
+    <param name='1DownAngle' value='10.0'/>
+    <param name='1DownAngleV' value='-5.0'/>
+    <param name='1Rotate' value='-90.0'/>
+    <param name='1RotateV' value='20.0'/>
+    <param name='1Branches' value='35'/>
+    <param name='1BranchDist' value='1.0'/>
+    <param name='1Length' value='0.2'/>
+    <param name='1LengthV' value='0.0'/>
+    <param name='1Taper' value='1.0'/>
+    <param name='1SegSplits' value='0.0'/>
+    <param name='1SplitAngle' value='0.0'/>
+    <param name='1SplitAngleV' value='0.0'/>
+    <param name='1CurveRes' value='1'/>
+    <param name='1Curve' value='0.0'/>
+    <param name='1CurveBack' value='0.0'/>
+    <param name='1CurveV' value='0.0'/>
+    <!-- level 2 -->
+    <param name='2DownAngle' value='10.0'/>
+    <param name='2DownAngleV' value='0.0'/>
+    <param name='2Rotate' value='0.0'/>
+    <param name='2RotateV' value='0.0'/>
+  </species>
+</arbaro>

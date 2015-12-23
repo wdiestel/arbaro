@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+
+<arbaro>
+  <species name="black_tupelo">
+    <!-- general params -->
+    <param name="Shape" value="4"/>
+    <param name="BaseSize" value="0.2"/>
+    <param name="Scale" value="23"/>
+    <param name="ScaleV" value="5"/>
+    <param name="Levels" value="4"/>
+    <param name="Ratio" value="0.015"/>
+    <param name="RatioPower" value="1.3"/>
+    <param name="Lobes" value="3"/>
+    <param name="LobeDepth" value="0.1"/>
+    <param name="Flare" value="1"/>
+    <param name="Leaves" value="6"/>
+    <param name="LeafShape" value="0"/>
+    <param name="LeafScale" value="0.3"/>
+    <param name="LeafScaleX" value="0.5"/>
+    <param name="AttractionUp" value="0.5"/>
+    <!-- level 0 -->
+    <param name="0Scale" value="1.0"/>
+    <param name="0ScaleV" value="0.0"/>
+    <param name="0BaseSplits" value="0"/>
+    <param name="0Length" value="1.0"/>
+    <param name="0LengthV" value="0"/>
+    <param name="0Taper" value="1.1"/>
+    <param name="0SegSplits" value="0"/>
+    <param name="0SplitAngle" value="0"/>
+    <param name="0SplitAngleV" value="0"/>
+    <param name="0CurveRes" value="10"/>
+    <param name="0Curve" value="0"/>
+    <param name="0CurveV" value="40"/>
+    <param name="0CurveBack" value="0"/>
+    <!-- level 1 -->
+    <param name="1DownAngle" value="60"/>
+    <param name="1DownAngleV" value="-40"/>
+    <param name="1Rotate" value="140"/>
+    <param name="1RotateV" value="0"/>
+    <param name="1Branches" value="50"/>
+    <param name="1Length" value="0.3"/>
+    <param name="1LengthV" value="0.05"/>
+    <param name="1Taper" value="1.0"/>
+    <param name="1SegSplits" value="0"/>
+    <param name="1SplitAngle" value="0"/>
+    <param name="1SplitAngleV" value="0"/>
+    <param name="1CurveRes" value="10"/>
+    <param name="1Curve" value="0"/>
+    <param name="1CurveV" value="90"/>
+    <param name="1CurveBack" value="0"/>
+    <!-- level 2 -->
+    <param name="2DownAngle" value="30"/>
+    <param name="2DownAngleV" value="10"/>
+    <param name="2Rotate" value="140"/>
+    <param name="2RotateV" value="0"/>
+    <param name="2Branches" value="25"/>
+    <param name="2Length" value="0.6"/>
+    <param name="2LengthV" value="0.1"/>
+    <param name="2Taper" value="1.0"/>
+    <param name="2SegSplits" value="0"/>
+    <param name="2SplitAngle" value="0"/>
+    <param name="2SplitAngleV" value="0"/>
+    <param name="2CurveRes" value="10"/>
+    <param name="2Curve" value="-10"/>
+    <param name="2CurveV" value="150"/>
+    <param name="2CurveBack" value="0"/>
+    <!-- level 3 -->
+    <param name="3DownAngle" value="45"/>
+    <param name="3DownAngleV" value="10"/>
+    <param name="3Rotate" value="140"/>
+    <param name="3RotateV" value="0"/>
+    <param name="3Branches" value="12"/>
+    <param name="3Length" value="0.4"/>
+    <param name="3LengthV" value="0"/>
+    <param name="3Taper" value="1.0"/>
+    <param name="3SegSplits" value="0"/>
+    <param name="3SplitAngle" value="0"/>
+    <param name="3SplitAngleV" value="0"/>
+    <param name="3CurveRes" value="1"/>
+    <param name="3Curve" value="0"/>
+    <param name="3CurveV" value="0"/>
+    <param name="3CurveBack" value="0"/>
+  </species>
+</arbaro>
