@@ -11,7 +11,7 @@ It supports many tree species including palms and cacti.
 
 Your first tree made with arbaro:
 
-1. You need Java 1.4.x and Povray 3.5 be installed. You could use
+1. You need Java 1.4.x or newer and Povray 3.5 be installed. You could use
    an older Java version if you got the generic XML-processing package
    JAXP separately.
 
@@ -71,7 +71,7 @@ c) you can fine tune the mesh resolution and to what stem levels
      java -jar arbaro.jar -m 0.2 < trees/shave-grass.xml > pov/shave-grass.inc
 
 
-   (There is a parameter Smooth with the same meaning for species
+   (There is also a parameter "Smooth" with the same meaning used for species
    which look best with a specific smooth value)
 
 ------------------------------------------------------------------------------
@@ -121,14 +121,12 @@ I have another problem.
 
 ------------------------------------------------------------------------------
 
-Compiling from sources. If you are a Unix usere, this should 
-work for you:
+Compiling from sources: Call "ant" in the folder with build.xml file
 
-            ./jc && ./jcg && ./jj 
 
 ------------------------------------------------------------------------------
 
-Questions, patches, help offers, chocolade, ... send to <diestel@steloj.de>
+Questions, patches, help offers, chocolate, ... send to <diestel@steloj.de>
 
 
 
