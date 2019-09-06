@@ -22,13 +22,14 @@
 
 package net.sourceforge.arbaro.tree;
 
-//import java.io.InputStream;
-//import java.io.PrintWriter;
-//import java.util.TreeMap;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.TreeMap;
 
-import net.sourceforge.arbaro.params.ParamManager;
-import net.sourceforge.arbaro.feedback.Console;
-import net.sourceforge.arbaro.feedback.Progress;
+import net.sourceforge.arbaro.export.Progress;
+import net.sourceforge.arbaro.params.AbstractParam;
+import net.sourceforge.arbaro.params.Params;
+import net.sourceforge.arbaro.export.Console;
 
 /**
  * A TreeGenerator facade handling exceptions in tree generation.
@@ -57,10 +58,24 @@ public class ShieldedTreeGenerator implements TreeGenerator {
 		Console.errorOutput("Error in tree generator:");
 		Console.printException(e);
 	}
-	
-	public ParamManager getParamManager() {
+
+	/**
+	 * See TreeGenerator interface
+	 */
+	public void clearParams() {
 		try {
-			return treeGenerator.getParamManager();
+			treeGenerator.clearParams();
+		} catch (Exception e) {
+			showException(e);
+		}
+	}
+
+	/**
+	 * See TreeGenerator interface
+	 */
+	public AbstractParam getParam(String param) {
+		try {
+			return treeGenerator.getParam(param);
 		} catch (Exception e) {
 			showException(e);
 			return null;
@@ -70,49 +85,26 @@ public class ShieldedTreeGenerator implements TreeGenerator {
 	/**
 	 * See TreeGenerator interface
 	 */
-//	public void clearParams() {
-//		try {
-//			treeGenerator.clearParams();
-//		} catch (Exception e) {
-//			showException(e);
-//		}
-//	}
+	public TreeMap getParamGroup(int level, String group) {
+		try {
+			return treeGenerator.getParamGroup(level,group);
+		} catch (Exception e) {
+			showException(e);
+			return null;
+		}
+	}
 
 	/**
 	 * See TreeGenerator interface
 	 */
-//	public AbstractParam getParam(String param) {
-//		try {
-//			return treeGenerator.getParam(param);
-//		} catch (Exception e) {
-//			showException(e);
-//			return null;
-//		}
-//	}
-
-	/**
-	 * See TreeGenerator interface
-	 */
-//	public TreeMap getParamGroup(int level, String group) {
-//		try {
-//			return treeGenerator.getParamGroup(level,group);
-//		} catch (Exception e) {
-//			showException(e);
-//			return null;
-//		}
-//	}
-
-	/**
-	 * See TreeGenerator interface
-	 */
-//	public Params getParams() {
-//		try {
-//			return treeGenerator.getParams();
-//		} catch (Exception e) {
-//			showException(e);
-//			return null;
-//		}
-//	}
+	public Params getParams() {
+		try {
+			return treeGenerator.getParams();
+		} catch (Exception e) {
+			showException(e);
+			return null;
+		}
+	}
 
 	/**
 	 * See TreeGenerator interface
@@ -141,35 +133,35 @@ public class ShieldedTreeGenerator implements TreeGenerator {
 	/**
 	 * See TreeGenerator interface
 	 */
-//	public void readParamsFromCfg(InputStream is) {
-//		try {
-//			treeGenerator.readParamsFromCfg(is);
-//		} catch (Exception e) {
-//			showException(e);
-//		}
-//	}
+	public void readParamsFromCfg(InputStream is) {
+		try {
+			treeGenerator.readParamsFromCfg(is);
+		} catch (Exception e) {
+			showException(e);
+		}
+	}
 
 	/**
 	 * See TreeGenerator interface
 	 */
-//	public void readParamsFromXML(InputStream is) {
-//		try {
-//			treeGenerator.readParamsFromXML(is);
-//		} catch (Exception e) {
-//			showException(e);
-//		}
-//	}
+	public void readParamsFromXML(InputStream is) {
+		try {
+			treeGenerator.readParamsFromXML(is);
+		} catch (Exception e) {
+			showException(e);
+		}
+	}
 
 	/**
 	 * See TreeGenerator interface
 	 */
-//	public void setParam(String param, String value) {
-//		try {
-//			treeGenerator.setParam(param,value);
-//		} catch (Exception e) {
-//			showException(e);
-//		}
-//	}
+	public void setParam(String param, String value) {
+		try {
+			treeGenerator.setParam(param,value);
+		} catch (Exception e) {
+			showException(e);
+		}
+	}
 
 	/**
 	 * See TreeGenerator interface
@@ -185,11 +177,11 @@ public class ShieldedTreeGenerator implements TreeGenerator {
 	/**
 	 * See TreeGenerator interface
 	 */
-//	public void writeParamsToXML(PrintWriter out) {
-//		try {
-//			treeGenerator.writeParamsToXML(out);
-//		} catch (Exception e) {
-//			showException(e);
-//		}
-//	}
+	public void writeParamsToXML(PrintWriter out) {
+		try {
+			treeGenerator.writeParamsToXML(out);
+		} catch (Exception e) {
+			showException(e);
+		}
+	}
 }

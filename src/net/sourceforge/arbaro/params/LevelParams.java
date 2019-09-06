@@ -24,9 +24,6 @@ package net.sourceforge.arbaro.params;
 
 import java.io.PrintWriter;
 
-import net.sourceforge.arbaro.params.impl.FloatParam;
-import net.sourceforge.arbaro.params.impl.IntParam;
-
 //TODO this class is specific for tree generation algorithm
 //may be move it to arbaro.tree package and hide it for
 //other packages. param Values can be set and read than

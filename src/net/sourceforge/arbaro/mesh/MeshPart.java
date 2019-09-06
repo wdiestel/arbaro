@@ -27,7 +27,7 @@ import java.util.Enumeration;
 //import java.util.NoSuchElementException;
 
 import net.sourceforge.arbaro.tree.Stem;
-import net.sourceforge.arbaro.feedback.Console;
+import net.sourceforge.arbaro.export.Console;
 
 /**
  * 

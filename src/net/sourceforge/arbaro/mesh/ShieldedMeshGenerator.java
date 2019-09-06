@@ -22,8 +22,8 @@
 
 package net.sourceforge.arbaro.mesh;
 
-import net.sourceforge.arbaro.feedback.Console;
-import net.sourceforge.arbaro.feedback.Progress;
+import net.sourceforge.arbaro.export.Console;
+import net.sourceforge.arbaro.export.Progress;
 import net.sourceforge.arbaro.tree.Tree;
 
 /**

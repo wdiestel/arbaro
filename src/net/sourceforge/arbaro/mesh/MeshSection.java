@@ -26,9 +26,9 @@ import java.text.NumberFormat;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
-import net.sourceforge.arbaro.transformation.FloatFormat;
+import net.sourceforge.arbaro.params.FloatFormat;
 import net.sourceforge.arbaro.transformation.Vector;
-import net.sourceforge.arbaro.feedback.Console;
+import net.sourceforge.arbaro.export.Console;
 
 /**
  * A class holding a section of a mesh.

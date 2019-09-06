@@ -37,15 +37,11 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Color;
 
-import net.sourceforge.arbaro.tree.DefaultTreeTraversal;
-import net.sourceforge.arbaro.tree.Leaf;
-import net.sourceforge.arbaro.tree.Stem;
-import net.sourceforge.arbaro.tree.StemSection;
-import net.sourceforge.arbaro.tree.Tree;
-import net.sourceforge.arbaro.tree.TreeTraversal;
+import net.sourceforge.arbaro.tree.*;
 import net.sourceforge.arbaro.transformation.*;
 import net.sourceforge.arbaro.mesh.*;
-import net.sourceforge.arbaro.feedback.Console;
+import net.sourceforge.arbaro.params.Params;
+import net.sourceforge.arbaro.export.Console;
 
 /**
  * An image showing parts of the edited tree
@@ -128,8 +124,8 @@ public class TreePreview extends JComponent {
 			else {
 				drawMesh(g);
 				//drawLeaves(g);
-				/*Params params = previewTree.getParams();*/
-				previewTree.traverseTree(new LeafDrawer(g,/*params,*/previewTree));
+				Params params = previewTree.getParams();
+				previewTree.traverseTree(new LeafDrawer(g,params,previewTree));
 			}
 
 			// DEBUG
@@ -386,7 +382,7 @@ public class TreePreview extends JComponent {
 		Graphics g;
 //		PreviewTree pTree;
 		
-		public LeafDrawer(Graphics g, /*Params params,*/ PreviewTree pTree) {
+		public LeafDrawer(Graphics g, Params params, PreviewTree pTree) {
 			this.g = g;
 			this.m = pTree.getLeafMesh();
 			g.setColor(leafColor);

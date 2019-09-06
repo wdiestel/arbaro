@@ -25,7 +25,7 @@ package net.sourceforge.arbaro.gui;
 import java.awt.Component;
 
 import net.sourceforge.arbaro.export.Exporter;
-import net.sourceforge.arbaro.export.impl.ShieldedExporter;
+import net.sourceforge.arbaro.export.ShieldedExporter;
 
 /**
  * @author wolfram

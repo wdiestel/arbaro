@@ -27,8 +27,6 @@ package net.sourceforge.arbaro.export;
 
 import java.io.PrintWriter;
 
-import net.sourceforge.arbaro.feedback.Progress;
-
 /**
  * Base class for tree output to 3D-formats like Povray, DXF 
  * and Wavefront OBJ file formats

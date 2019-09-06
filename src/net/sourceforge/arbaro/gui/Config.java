@@ -30,22 +30,22 @@ class Config extends Properties {
 	private static final long serialVersionUID = 1L;
 
 	String configFileName;
-	
+
 	public Config() {
-		
+
 		// config file name
 		String folder = System.getProperty("user.home");
 		String os = System.getProperty("os.name");
 		String filesep = System.getProperty("file.separator");
 		if (os.indexOf("Windows") >= 0) {
-			configFileName = folder + filesep + "arbaro.cfg";	
+			configFileName = folder + filesep + "arbaro.cfg";
 		} else {
-			configFileName = folder + filesep + ".arbarorc";	
+			configFileName = folder + filesep + ".arbarorc";
 		}
-		
+
 		// load properties
 		FileInputStream in=null;
-		
+
 		try {
 			in = new FileInputStream(configFileName);
 			load(in);
@@ -62,10 +62,10 @@ class Config extends Properties {
 			}
 		}
 	}
-	
+
 	public void store() throws Exception {
 		FileOutputStream out = null;
-		
+
 		try {
 			out = new FileOutputStream(configFileName);
 			store(out,"Arbaro setup");
@@ -78,8 +78,8 @@ class Config extends Properties {
 			}
 		}
 	}
-	
-	static public String defaultPovrayExe() {
+
+	static public String defaultRendererExe() {
 		String os = System.getProperty("os.name");
 		if (os.indexOf("Windows") >= 0) {
 			return "pvengine.exe";
@@ -87,7 +87,7 @@ class Config extends Properties {
 			return "povray"; // Unix
 		}
 	}
-	
+
 };
 
 

@@ -22,12 +22,6 @@
 
 package net.sourceforge.arbaro.export;
 
-import net.sourceforge.arbaro.export.impl.DXFExporter;
-import net.sourceforge.arbaro.export.impl.OBJExporter;
-import net.sourceforge.arbaro.export.impl.POVConeExporter;
-import net.sourceforge.arbaro.export.impl.POVMeshExporter;
-import net.sourceforge.arbaro.export.impl.POVSceneExporter;
-import net.sourceforge.arbaro.export.impl.ShieldedExporter;
 import net.sourceforge.arbaro.mesh.MeshGenerator;
 import net.sourceforge.arbaro.mesh.MeshGeneratorFactory;
 import net.sourceforge.arbaro.tree.Tree;
@@ -42,15 +36,14 @@ public class ExporterFactory {
 	// Outputformats
 	public final static int POV_MESH = 0;
 	public final static int POV_CONES = 1;
-	public final static int DXF = 2;
-	public final static int OBJ = 3;
-	//public final static int POV_SCENE = 4;
+	public final static int RIB = 2;
+	public final static int DXF = 3;
+	public final static int OBJ = 4;
 
-	
 	static int exportFormat = ExporterFactory.POV_MESH;
-	static String outputPath = System.getProperty("user.dir")
-		+System.getProperty("file.separator")+"pov";
-	
+	static String outputPath = System.getProperty("user.dir")+System.getProperty("file.separator");
+	static String imageFilePath = outputPath+System.getProperty("file.separator")+"tree";
+
 	// TODO move render parameters to a special RenderCmd class?
 	static int renderW = 400;
 	static int renderH = 600;
@@ -58,44 +51,53 @@ public class ExporterFactory {
 	static boolean outputStemUVs = false;
 	static boolean outputLeafUVs = false;
 
-	final static String[] formats = { "Povray meshes","Povray primitives","AutoCAD DXF","Wavefront OBJ" };
+	final static String[] formats = { "Povray meshes","Povray primitives","RenderMan RIB","AutoCAD DXF","Wavefront OBJ" };
+	final static String[] shortformats = { "POV_MESH","POV_CONES","RIB","DXF","OBJ" };
 
-	
+
 	/**
-	 * Sets the output type for the Povray code 
+	 * Sets the output type for the Povray code
 	 * (primitives like cones, spheres and discs or
 	 * triangle meshes)
-	 * 
+	 *
 	 * @param output
 	 */
 	static public void setExportFormat(int output) {
 		exportFormat = output;
 	}
-	
+
 	static public int getExportFormat() {
 		return exportFormat;
 	}
-	
+
 	static public String getOutputPath() {
 		return outputPath;
 	}
-	
+
 	static public void setOutputPath(String p) {
 		outputPath=p;
 	}
-	
+
+	static public String getImageFilePath() {
+		return imageFilePath;
+	}
+
+	static public void setImageFilePath(String p) {
+		imageFilePath=p;
+	}
+
 	static public void setRenderW(int w) {
 		renderW = w;
 	}
-	
+
 	static public void setRenderH(int h) {
 		renderH=h;
 	}
-	
+
 	static public int getRenderH() {
 		return renderH;
 	}
-	
+
 	static public int getRenderW() {
 		return renderW;
 	}
@@ -103,7 +105,7 @@ public class ExporterFactory {
 	static public void setOutputStemUVs(boolean oUV) {
 		outputStemUVs = oUV;
 	}
-	
+
 	static public boolean getOutputStemUVs() {
 		return outputStemUVs;
 	}
@@ -116,13 +118,13 @@ public class ExporterFactory {
 		return outputLeafUVs;
 	}
 
-	static public Exporter createExporter(Tree tree/*, Params params*/) 
+	static public Exporter createExporter(Tree tree/*, Params params*/)
 		throws InvalidExportFormatError {
-		
+
 		Exporter exporter = null;
 		MeshGenerator meshGenerator;
 		boolean useQuads = false;
-		
+
 		if (exportFormat == POV_CONES) {
 			exporter = new POVConeExporter(tree/*,params*/);
 		}
@@ -131,6 +133,12 @@ public class ExporterFactory {
 			exporter = new POVMeshExporter(tree,meshGenerator);
 			((POVMeshExporter)exporter).outputStemUVs = outputStemUVs;
 			((POVMeshExporter)exporter).outputLeafUVs = outputLeafUVs;
+		} else if (exportFormat == RIB) {
+			useQuads = true;
+			meshGenerator = MeshGeneratorFactory.createMeshGenerator(useQuads);
+			exporter = new RIBExporter(tree,meshGenerator);
+			((RIBExporter)exporter).outputStemUVs = outputStemUVs;
+			((RIBExporter)exporter).outputLeafUVs = outputLeafUVs;
 		} else if (exportFormat == DXF) {
 			meshGenerator = MeshGeneratorFactory.createMeshGenerator(/*params,*/ useQuads);
 			exporter = new DXFExporter(tree,meshGenerator);
@@ -147,22 +155,30 @@ public class ExporterFactory {
 		return exporter;
 	}
 
-	static public Exporter createSceneExporter(Tree tree/*, Params params*/) { 
-		return new POVSceneExporter(tree,/*params,*/renderW,renderH);
+	static public Exporter createSceneExporter(Tree tree /*, Params params*/) {
+
+		if(exportFormat == RIB) {
+			return new RIBSceneExporter(tree,/*params,*/renderW,renderH,outputPath,imageFilePath);
+		} else {
+			return new POVSceneExporter(tree,/*params,*/renderW,renderH);
+		}
 	}
 
-	static public Exporter createShieldedExporter(Tree tree) throws InvalidExportFormatError 
+	static public Exporter createShieldedExporter(Tree tree, Params params) throws InvalidExportFormatError
 	{
 		return new ShieldedExporter(createExporter(tree));
 	}
 
-	static public Exporter createShieldedSceneExporter(Tree tree/*,Params params*/) {
-		return new ShieldedExporter(createSceneExporter(tree/*, params*/));
+	static public Exporter createShieldedSceneExporter(Tree tree /*,Params params*/) {
+		return new ShieldedExporter(createSceneExporter(tree /*, params*/));
 	}
-	
+
 	public static String[] getExportFormats() {
 		return formats;
 	}
 
-		
+	public static String[] getShortExportFormats() {
+		return shortformats;
+	}
+
 }

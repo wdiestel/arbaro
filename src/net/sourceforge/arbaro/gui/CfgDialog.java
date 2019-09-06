@@ -44,55 +44,55 @@ public class CfgDialog {
 
 	Config config;
 	Workplace workplace;
-	
+
 	public CfgDialog(Workplace wplace, JFrame parent, Config cfg) {
-		
+
 		config = cfg;
 		workplace = wplace;
-		
+
 		frame = new JFrame("Arbaro setup");
 		frame.setIconImage(parent.getIconImage());
-		
+
 		fileChooser = new JFileChooser();
 		// fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")"));
-		
+
 		createGUI();
 		frame.setVisible(true);
 	}
-	
+
 	void createGUI() {
 		mainPanel = new JPanel();
 		//panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
 		GridBagLayout grid = new GridBagLayout();
 		mainPanel.setLayout(grid);
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
-		
+
 		// label constraints
 		GridBagConstraints clabel = new GridBagConstraints();
 		clabel.gridx = 0;
 		clabel.anchor = GridBagConstraints.WEST;
-		
+
 		// text field constraints
 		GridBagConstraints ctext = new GridBagConstraints();
 		ctext.gridx = 1;
 		ctext.ipady = 4;
 		ctext.anchor = GridBagConstraints.WEST;
 		ctext.insets = new Insets(1,5,1,5);
-		
+
 		// button constraints
 		GridBagConstraints cbutton = new GridBagConstraints();
 		cbutton.gridx = 2;
 		cbutton.anchor = GridBagConstraints.WEST;
-		
+
 		int line=-1;
 		JLabel label;
-		
+
 		// default export format
 		clabel.gridy = ++line;
 		label = new JLabel("Default export format:");
 		grid.setConstraints(label,clabel);
 		mainPanel.add(label);
-		
+
 		ctext.gridy = line;
 		formatBox = new JComboBox(ExporterFactory.getExportFormats());
 		formatBox.setEditable(false);
@@ -100,20 +100,20 @@ public class CfgDialog {
 				Integer.parseInt(config.getProperty("export.format","0")));
 		grid.setConstraints(formatBox,ctext);
 		mainPanel.add(formatBox);
-		
+
 		// default output path
 		clabel.gridy = ++line;
 		label = new JLabel("Output path:");
 		grid.setConstraints(label,clabel);
 		mainPanel.add(label);
-		
+
 		ctext.gridy = line;
 		pathField = new JTextField(30);
 		pathField.setText(config.getProperty("export.path",
-				System.getProperty("user.dir")+fileSep+"pov"));
+				System.getProperty("user.dir")+fileSep+"render"));
 		grid.setConstraints(pathField,ctext);
 		mainPanel.add(pathField);
-		
+
 		cbutton.gridy = line;
 		JButton selectFile = new JButton("Choose...");
 		selectFile.addActionListener(new ActionListener() {
@@ -127,19 +127,19 @@ public class CfgDialog {
 		grid.setConstraints(selectFile,cbutton);
 		mainPanel.add(selectFile);
 
-		// povray executable  
+		// povray executable
 		clabel.gridy = ++line;
-		label = new JLabel("POVRay executable:");
+		label = new JLabel("Renderer executable:");
 		grid.setConstraints(label,clabel);
 		mainPanel.add(label);
-		
+
 		ctext.gridy = line;
 		fileField = new JTextField(30);
 		fileField.setText(config.getProperty("povray.executable",
-			Config.defaultPovrayExe()));
+			Config.defaultRendererExe()));
 		grid.setConstraints(fileField,ctext);
 		mainPanel.add(fileField);
-		
+
 		cbutton.gridy = line;
 		selectFile = new JButton("Choose...");
 		selectFile.addActionListener(new ActionListener() {
@@ -153,12 +153,12 @@ public class CfgDialog {
 		grid.setConstraints(selectFile,cbutton);
 		mainPanel.add(selectFile);
 
-		// render width 
+		// render width
 		clabel.gridy = ++line;
 		label = new JLabel("Render width:");
 		grid.setConstraints(label,clabel);
 		mainPanel.add(label);
-		
+
 		ctext.gridy = line;
 		widthField = new JTextField(10);
 		widthField.setAlignmentX(JTextField.RIGHT_ALIGNMENT);
@@ -171,7 +171,7 @@ public class CfgDialog {
 		label = new JLabel("Render height:");
 		grid.setConstraints(label,clabel);
 		mainPanel.add(label);
-		
+
 		ctext.gridy = line;
 		heightField = new JTextField(10);
 		heightField.setAlignmentX(JTextField.RIGHT_ALIGNMENT);
@@ -184,20 +184,20 @@ public class CfgDialog {
 		label = new JLabel("Default seed:");
 		grid.setConstraints(label,clabel);
 		mainPanel.add(label);
-		
+
 		ctext.gridy = line;
 		seedField = new JTextField(10);
 		seedField.setAlignmentX(JTextField.RIGHT_ALIGNMENT);
 		seedField.setText(config.getProperty("tree.seed","13"));
 		grid.setConstraints(seedField,ctext);
 		mainPanel.add(seedField);
-		
+
 		// antialias
 		clabel.gridy = ++line;
 		label = new JLabel("Antialias:");
 		grid.setConstraints(label,clabel);
 		mainPanel.add(label);
-		
+
 		ctext.gridy = line;
 		antialiasBox = new JCheckBox();
 		antialiasBox.setAlignmentX(JTextField.RIGHT_ALIGNMENT);
@@ -205,32 +205,32 @@ public class CfgDialog {
 		antialiasBox.setSelected(config.getProperty("preview.antialias","on").equals("on"));
 		grid.setConstraints(antialiasBox,ctext);
 		mainPanel.add(antialiasBox);
-		
+
 		// buttons
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new OKButtonListener());
-		
+
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
 			}
 		});
-		
+
 		JPanel buttons = new JPanel();
 		buttons.add(okButton);
 		buttons.add(cancelButton);
-		
+
 		cbutton.gridx = 1;
 		cbutton.gridy = 7;
 		cbutton.anchor = GridBagConstraints.CENTER;
 		grid.setConstraints(buttons,cbutton);
 		mainPanel.add(buttons);
-		
+
 		frame.getContentPane().add(mainPanel);
 		frame.pack();
 	}
-	
+
 	class OKButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			config.setProperty("export.format",""+formatBox.getSelectedIndex());

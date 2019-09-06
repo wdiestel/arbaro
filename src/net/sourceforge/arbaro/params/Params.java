@@ -22,13 +22,7 @@
 
 package net.sourceforge.arbaro.params;
 
-import net.sourceforge.arbaro.feedback.Console;
-import net.sourceforge.arbaro.params.impl.AbstractParam;
-import net.sourceforge.arbaro.params.impl.FloatParam;
-import net.sourceforge.arbaro.params.impl.IntParam;
-import net.sourceforge.arbaro.params.impl.LeafShapeParam;
-import net.sourceforge.arbaro.params.impl.ShapeParam;
-import net.sourceforge.arbaro.params.impl.StringParam;
+import net.sourceforge.arbaro.export.Console;
 
 import java.io.PrintWriter;
 import java.io.InputStream;
@@ -40,7 +34,6 @@ import java.io.FileReader;
 
 import java.util.Hashtable;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.event.*;
@@ -56,24 +49,24 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Read parameters from Config style text file
- * 
+ *
  * @author wolfram
  *
  */
 class CfgTreeParser {
-	
+
 	public void parse(String fileName, Params params) throws Exception {
 		File inputFile = new File(fileName);
-		LineNumberReader r = 
+		LineNumberReader r =
 			new LineNumberReader(new FileReader(inputFile));
 		parse(r,params);
 	}
-	
+
 	public void parse(InputStream is, Params params) throws Exception {
 		LineNumberReader r = new LineNumberReader(new InputStreamReader(is));
 		parse(r,params);
 	}
-	
+
 	public void parse(LineNumberReader r, Params params) throws Exception {
 		String line = r.readLine().trim();
 		String param;
@@ -96,38 +89,38 @@ class CfgTreeParser {
 
 /**
  * Read parameters from XML file
- * 
+ *
  * @author wolfram
  *
  */
 
 class XMLTreeFileHandler extends DefaultHandler {
-	
+
 	Params params;
 	String errors = "";
-	
+
 	public XMLTreeFileHandler(Params par) {
 		params = par;
 	}
-	
+
 	public void startElement(String namespaceURI,String localName,
 			String qName,Attributes atts) throws SAXException {
-		
+
 		try {
-			
+
 			if (qName.equals("species")) {
 				params.setParam("Species",atts.getValue("name"));
 			} else if (qName.equals("param")) {
-				
+
 				params.setParam(atts.getValue("name"),atts.getValue("value"));
 			}
 		} catch (ParamException e) {
 			errors += e.getMessage()+"\n";
 			// throw new SAXException(e.getMessage());
 		}
-		
+
 	}
-	
+
 	/*
 	 public void endElement(String namespaceURI,String localName,
 	 String qName) {
@@ -139,16 +132,16 @@ class XMLTreeFileHandler extends DefaultHandler {
 
 class XMLTreeParser {
 	SAXParser parser;
-	
-	public XMLTreeParser() 
+
+	public XMLTreeParser()
 	throws ParserConfigurationException, SAXException
 	{
-		// get a parser factory 
+		// get a parser factory
 		SAXParserFactory spf = SAXParserFactory.newInstance();
-		// get a XMLReader 
+		// get a XMLReader
 		parser = spf.newSAXParser();
 	}
-	
+
 	public void parse(InputSource is, Params params) throws SAXException, IOException, ParamException {
 		// parse an XML tree file
 		//InputSource is = new InputSource(sourceURI);
@@ -166,10 +159,10 @@ class XMLTreeParser {
  *
  */
 
-public class Params implements ParamReader, ParamWriter, ParamEditing {
-	
-	
-	// Tree Shapes 
+public class Params {
+
+
+	// Tree Shapes
 	public final static int CONICAL = 0;
 	public final static int SPHERICAL = 1;
 	public final static int HEMISPHERICAL = 2;
@@ -179,70 +172,70 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 	public final static int INVERSE_CONICAL = 6;
 	public final static int TEND_FLAME = 7;
 	public final static int ENVELOPE = 8;
-	
+
 	public double leavesErrorValue;
-	
+
 	protected LevelParams [] levelParams;
 	public Random random;
 	Hashtable paramDB;
-	
+
 	// debugging etc.
 /*	public boolean debug=false;
 	public boolean verbose=false;
-*/	
+*/
 	public boolean preview=false;
 	public boolean ignoreVParams;
 	public int stopLevel;
-	
+
 	// general params
 	public String Species;
-	
+
 	public double LeafQuality;
-	
-	// this mesh parameters are influenced by Smooth, 
+
+	// this mesh parameters are influenced by Smooth,
 	// this are only defaults here
 	public double Smooth;
-	public double mesh_quality;  // 0..1 - factor for mesh point number 
+	public double mesh_quality;  // 0..1 - factor for mesh point number
 	// (1+mesh_quality)
-	public int smooth_mesh_level; // -1..Levels - add average normals 
+	public int smooth_mesh_level; // -1..Levels - add average normals
 	// to mesh points of all levels below
-	
-	
+
+
 	// the seed
 	//public int Seed;
-	
+
 	// defauls values for tree params
 	public int Levels;
-	
+
 	// trunk&radius parameters
 	public double Ratio;
 	public double RatioPower;
 	public int Shape;
 	public double BaseSize;
 	public double Flare;
-	
+
 	public int Lobes;
 	public double LobeDepth;
-	
+
 	// leave parameters
 	public int Leaves;
 	public String LeafShape;
 	public double LeafScale;
 	public double LeafScaleX;
-	
+
 	// new introduced - not in the paper
 	public double LeafStemLen;
 	public double LeafBend;
 	public int LeafDistrib;
-	
+
 	// tree scale
 	public double Scale;
 	public double ScaleV;
-	
+
 	// additional trunk scaling
-	public double _0Scale; // only 0SCale used
+	public double _0Scale; // only 0Scale used
 	public double _0ScaleV; // only 0ScaleV used
-	
+
 	// attraction and pruning/envelope
 	public double AttractionUp;
 	public double PruneRatio;
@@ -250,35 +243,35 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 	public double PrunePowerHigh;
 	public double PruneWidth;
 	public double PruneWidthPeak;
-	
+
 	// base splits
 	public int _0BaseSplits;
-	
+
 	// variables need for stem creation
 	public double scale_tree;
-	
+
 	// change events
 	protected ChangeEvent changeEvent = null;
 	protected EventListenerList listenerList = new EventListenerList();
-	
-	
+
+
 	public Params() {
-		
+
 //		debug = false;
 		//verbose = true;
 		ignoreVParams = false;
-		
+
 		stopLevel = -1;
-		
+
 		Species = "default";
-		
+
 		LeafQuality = 1;
-		
+
 		Smooth = 0.5;
-		
+
 		// the default seed
 //		Seed = 13;
-		
+
 		// create paramDB
 		paramDB = new Hashtable();
 		levelParams = new LevelParams[4];
@@ -287,9 +280,9 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		}
 		registerParams();
 	};
-	
+
 	public Params(Params other) {
-		
+
 		// copy values from other
 		//debug = other.debug;
 		//verbose = other.verbose;
@@ -298,7 +291,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		Species = other.Species;
 //		Seed = other.Seed;
 		Smooth = other.Smooth;
-		
+
 		// create paramDB
 		paramDB = new Hashtable();
 		levelParams = new LevelParams[4];
@@ -306,12 +299,12 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 			levelParams[l] = new LevelParams(l,paramDB);
 		}
 		registerParams();
-		
+
 		// copy param values
 		for (Enumeration e = paramDB.elements(); e.hasMoreElements();) {
 			AbstractParam p = ((AbstractParam)e.nextElement());
 			try {
-				AbstractParam otherParam = other.param(p.name);
+				AbstractParam otherParam = other.getParam(p.name);
 				if (! otherParam.empty()) {
 					p.setValue(otherParam.getValue());
 				} // else use default value
@@ -325,41 +318,29 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		return levelParams[Math.min(stemlevel,3)];
 	}
 
-	
+
 	public void setSpecies(String sp) {
 		Species = sp;
 		fireStateChanged();
 	}
-	
+
 	public String getSpecies() {
 		return Species;
 	}
-	
-	public int getGeneralLevel() {
-		return GENERAL_PARAMS;
-	}
-	
-	public int getLevels() {
-		return param("Levels").getIntValue();
-	}
 
-	public void setLevels(int levels) {
-		param("Levels").setValue(""+levels);
-	}
-	
 	// help methods for output of params
 	private void writeParamXML(PrintWriter w, String name, int value) {
 		w.println("    <param name='" + name + "' value='"+value+"'/>");
 	}
-	
+
 	private void writeParamXML(PrintWriter w, String name, double value) {
 		w.println("    <param name='" + name + "' value='"+value+"'/>");
 	}
-	
+
 	private void writeParamXML(PrintWriter w, String name, String value) {
 		w.println("    <param name='" + name + "' value='"+value+"'/>");
 	}
-	
+
 	public void toXML(PrintWriter w) {
 		fromDB(); //prepare(); // read parameters from paramDB
 		w.println("<?xml version='1.0' ?>");
@@ -394,10 +375,10 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		writeParamXML(w,"PrunePowerHigh",PrunePowerHigh);
 		writeParamXML(w,"PruneWidth",PruneWidth);
 		writeParamXML(w,"PruneWidthPeak",PruneWidthPeak);
-		writeParamXML(w,"0Scale",_0Scale); 
+		writeParamXML(w,"0Scale",_0Scale);
 		writeParamXML(w,"0ScaleV",_0ScaleV);
 		writeParamXML(w,"0BaseSplits",_0BaseSplits);
-		
+
 		for (int i=0; i <= Math.min(Levels,3); i++) {
 			levelParams[i].toXML(w,i==Levels); // i==Levels => leaf level only
 		}
@@ -405,13 +386,13 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		w.println("</arbaro>");
 		w.flush();
 	}
-	
+
 	public void clearParams() {
 		for (Enumeration e = paramDB.elements(); e.hasMoreElements();) {
 			((AbstractParam)e.nextElement()).clear();
 		}
 	}
-	
+
 	// help method for loading params
 	private int getIntParam(String name) throws ParamException {
 		IntParam par = (IntParam)paramDB.get(name);
@@ -421,25 +402,25 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 			throw new ParamException("bug: param "+name+" not found!");
 		}
 	}
-	
+
 	private double getDblParam(String name) {
 		FloatParam par = (FloatParam)paramDB.get(name);
 		if (par != null) {
 			return par.doubleValue();
 		} else {
 			throw new ParamException("bug: param "+name+" not found!");
-		}   
+		}
 	}
-	
+
 	private String getStrParam(String name) throws ParamException {
 		StringParam par = (StringParam)paramDB.get(name);
 		if (par != null) {
 			return par.getValue();
 		} else {
 			throw new ParamException("bug: param "+name+" not found!");
-		}    
+		}
 	}
-	
+
 	void fromDB() {
 		LeafQuality = getDblParam("LeafQuality");
 		Smooth = getDblParam("Smooth");
@@ -460,7 +441,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		LeafBend = getDblParam("LeafBend");
 		Scale = getDblParam("Scale");
 		ScaleV = getDblParam("ScaleV");
-		_0Scale = getDblParam("0Scale"); 
+		_0Scale = getDblParam("0Scale");
 		_0ScaleV = getDblParam("0ScaleV");
 		AttractionUp = getDblParam("AttractionUp");
 		PruneRatio = getDblParam("PruneRatio");
@@ -472,18 +453,18 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		Species = getStrParam("Species");
 //		Seed = getIntParam("Seed");
 //		outputType = getIntParam("OutFormat");
-		
+
 		for (int i=0; i<=Math.min(Levels,3); i++) {
 			levelParams[i].fromDB(i==Levels); // i==Levels => leaf level only
 		}
 	}
-	
+
 	public void prepare(int seed) throws ParamException {
 		//if (debug) { verbose=false; }
-		
+
 		// read in parameter values from ParamDB
 		fromDB();
-		
+
 		if (ignoreVParams) {
 			ScaleV=0;
 			for (int i=1; i<4; i++) {
@@ -496,7 +477,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				if (lp.nDownAngle>0) { lp.nDownAngle=0; }
 			}
 		}
-		
+
 		// additional params checks
 		for (int l=0; l < Math.min(Levels,4); l++) {
 			LevelParams lp = levelParams[l];
@@ -504,7 +485,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				throw new ParamException("nSplitAngle may not be 0.");
 			}
 		}
-		
+
 		// create one random generator for every level
 		// so you can develop a tree level by level without
 		// influences between the levels
@@ -512,10 +493,10 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		for (int i=1; i<4; i++) {
 			l = levelParams[i].initRandom(l);
 		}
-		
+
 		// create a random generator for myself (used in stem_radius)
 		random = new Random(seed);
-		
+
 		// mesh settings
 		if (Smooth <= 0.2) {
 			smooth_mesh_level = -1;
@@ -523,7 +504,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 			smooth_mesh_level = (int)(Levels*Smooth);
 		}
 		mesh_quality = Smooth;
-		
+
 		// mesh points per cross-section for the levels
 		// minima
 		levelParams[0].mesh_points = 4;
@@ -533,30 +514,30 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		// set meshpoints with respect to mesh_quality and Lobes
 		if (Lobes>0) {
 			levelParams[0].mesh_points = (int)(Lobes*(Math.pow(2,(int)(1+2.5*mesh_quality))));
-			levelParams[0].mesh_points = 
+			levelParams[0].mesh_points =
 				Math.max(levelParams[0].mesh_points,(int)(4*(1+2*mesh_quality)));
 		}
 		for (int i=1; i<4; i++) {
-			levelParams[i].mesh_points = 
+			levelParams[i].mesh_points =
 				Math.max(3,(int)(levelParams[i].mesh_points*(1+1.5*mesh_quality)));
 		}
-		
+
 		// stop generation at some level?
 		if (stopLevel>=0 && stopLevel<=Levels) {
 			Levels = stopLevel;
 			Leaves = 0;
 		}
-		
+
 		scale_tree = Scale + levelParams[0].random.uniform(-ScaleV,ScaleV);
 	}
-	
+
 	public double getShapeRatio(double ratio) {
 		return getShapeRatio(ratio,Shape);
 	}
-	
+
 	public double getShapeRatio(double ratio, int shape) {
-		
-		switch (shape) { 
+
+		switch (shape) {
 		//case CONICAL: return 0.2+0.8*ratio;
 		// need real conical shape for lark, fir, etc.
 		case CONICAL: return ratio; // FIXME: this would be better: 0.05+0.95*ratio; ?
@@ -564,13 +545,13 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		case HEMISPHERICAL: return 0.2+0.8*Math.sin(0.5*Math.PI*ratio);
 		case CYLINDRICAL: return 1.0;
 		case TAPERED_CYLINDRICAL: return 0.5+0.5*ratio;
-		case FLAME: 
-			return ratio<=0.7? 
-					ratio/0.7 : 
+		case FLAME:
+			return ratio<=0.7?
+					ratio/0.7 :
 						(1-ratio)/0.3;
 		case INVERSE_CONICAL: return 1-0.8*ratio;
-		case TEND_FLAME: 
-			return ratio<=0.7? 
+		case TEND_FLAME:
+			return ratio<=0.7?
 					0.5+0.5*ratio/0.7 :
 						0.5+0.5*(1-ratio)/0.3;
 		case ENVELOPE:
@@ -585,7 +566,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		}
 		return 0; // shouldn't reach here
 	}
-	
+
 	public void setParam(String name, String value) throws ParamException {
 		AbstractParam p = (AbstractParam)paramDB.get(name);
 		if (p!=null) {
@@ -593,14 +574,14 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 			/*if (debug) {
 				System.err.println("Params.setParam(): set "+name+" to "+value);
 			}*/
-			
+
 		} else {
 			throw new ParamException("Unknown parameter "+name+"!");
 		}
 	}
-	
-	public Map getParamGroup(int level, String group) {
-		Map result = new TreeMap();
+
+	public TreeMap getParamGroup(int level, String group) {
+		TreeMap result = new TreeMap();
 		for (Enumeration e = paramDB.elements(); e.hasMoreElements();) {
 			AbstractParam p = (AbstractParam)e.nextElement();
 			if (p.getLevel() == level && p.getGroup().equals(group)) {
@@ -609,24 +590,23 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 		}
 		return result;
 	}
-	
+
 	// help methods for createing param-db
-	
+
 	int order;
-	public static final int GENERAL_PARAMS = -999; // no level - general params
 	private void intParam(String name, int min, int max, int deflt,
 			String group, String short_desc, String long_desc) {
-		paramDB.put(name,new IntParam(name,min,max,deflt,group,Params.GENERAL_PARAMS,
+		paramDB.put(name,new IntParam(name,min,max,deflt,group,AbstractParam.GENERAL,
 				order++,short_desc,long_desc));
 	}
-	
+
 	private void shapeParam(String name, int min, int max, int deflt,
 			String group, String short_desc, String long_desc) {
-		paramDB.put(name,new ShapeParam(name,min,max,deflt,group,Params.GENERAL_PARAMS,
+		paramDB.put(name,new ShapeParam(name,min,max,deflt,group,AbstractParam.GENERAL,
 				order++,short_desc,long_desc));
-	}	
-	
-	private void int4Param(String name, int min, int max, 
+	}
+
+	private void int4Param(String name, int min, int max,
 			int deflt0,int deflt1, int deflt2, int deflt3,
 			String group, String short_desc, String long_desc) {
 		int [] deflt = {deflt0,deflt1,deflt2,deflt3};
@@ -637,14 +617,14 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 					order,short_desc,long_desc));
 		}
 	}
-	
+
 	private void dblParam(String name, double min, double max, double deflt,
 			String group, String short_desc, String long_desc) {
-		paramDB.put(name,new FloatParam(name,min,max,deflt,group,Params.GENERAL_PARAMS,
+		paramDB.put(name,new FloatParam(name,min,max,deflt,group,AbstractParam.GENERAL,
 				order++,short_desc,long_desc));
 	}
-	
-	private void dbl4Param(String name, double min, double max, 
+
+	private void dbl4Param(String name, double min, double max,
 			double deflt0, double deflt1, double deflt2, double deflt3,
 			String group, String short_desc, String long_desc) {
 		double [] deflt = {deflt0,deflt1,deflt2,deflt3};
@@ -655,22 +635,22 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 					order,short_desc,long_desc));
 		}
 	}
-	
+
 	private void lshParam(String name, String deflt,
 			String group, String short_desc, String long_desc) {
-		paramDB.put(name,new LeafShapeParam(name,deflt,group,Params.GENERAL_PARAMS,
+		paramDB.put(name,new LeafShapeParam(name,deflt,group,AbstractParam.GENERAL,
 				order++,short_desc,long_desc));
 	}
-	
+
 	private void strParam(String name, String deflt,
 			String group, String short_desc, String long_desc) {
-		paramDB.put(name,new StringParam(name,deflt,group,Params.GENERAL_PARAMS,
+		paramDB.put(name,new StringParam(name,deflt,group,AbstractParam.GENERAL,
 				order++,short_desc,long_desc));
 	}
-	
+
 	private void registerParams() {
 		order=1;
-		
+
 		strParam("Species","default",
 				"SHAPE","the tree's species",
 				"<strong>Species</strong> is the kind of tree.<br>\n"+
@@ -678,18 +658,18 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 
 		shapeParam ("Shape",0,8,0,"SHAPE","general tree shape id",
 				"The <strong>Shape</strong> can be one of:<ul>\n"+
-				"<li>0 - conical</li>\n"+
-				"<li>1 - spherical</li>\n"+
-				"<li>2 - hemispherical</li>\n"+
-				"<li>3 - cylindrical</li>\n"+
-				"<li>4 - tapered cylindrical</li>\n"+
-				"<li>5 - flame</li>\n"+
-				"<li>6 - inverse conical</li>\n"+
-				"<li>7 - tend flame</li>\n"+
-				"<li>8 - envelope - uses pruning envelope<br>\n"+
+				"<li>0 - Conical</li>\n"+
+				"<li>1 - Spherical</li>\n"+
+				"<li>2 - Hemispherical</li>\n"+
+				"<li>3 - Cylindrical</li>\n"+
+				"<li>4 - Tapered cylindrical</li>\n"+
+				"<li>5 - Flame</li>\n"+
+				"<li>6 - Inverse conical</li>\n"+
+				"<li>7 - Tend flame</li>\n"+
+				"<li>8 - Envelope - uses pruning envelope<br>\n"+
 				"(see PruneWidth, PruneWidthPeak, PrunePowerLow, PrunePowerHigh)</li></ul>\n"
 		);
-		
+
 		intParam("Levels",0,9,3,"SHAPE","levels of recursion",
 				"<strong>Levels</strong> are the levels of recursion when creating the\n"+
 				"stems of the tree.<ul>\n" +
@@ -700,7 +680,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"Leaves are considered to be one level above the last stem level.<br>\n"+
 				"and uses it's down and rotation angles.\n"
 		);
-		
+
 		dblParam("Scale",0.000001,Double.POSITIVE_INFINITY,10.0,"SHAPE","average tree size in meters",
 				"<strong>Scale</strong> is the average tree size in meters.<br>\n"+
 				"With Scale = 10.0 and ScaleV = 2.0 trees of this species\n"+
@@ -708,21 +688,21 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"Note, that the trunk length can be different from the tree size.\n"+
 				"(See 0Length and 0LengthV)\n"
 		);
-		
+
 		dblParam("ScaleV",0.0,Double.POSITIVE_INFINITY,0.0,"SHAPE","variation of tree size in meters",
 				"<strong>ScaleV</strong> is the variation range of the tree size in meters.<br>\n"+
 				"Scale = 10.0, ScaleV = 2.0 means trees of this species\n"+
 				"reach from 8.0 to 12.0 meters.\n"+
 				"(See Scale)\n"
 		);
-		
+
 		dblParam ("BaseSize",0.0,1.0,0.25,"SHAPE","fractional branchless area at tree base",
 				"<strong>BaseSize</strong> is the fractional branchless part of the trunk. E.g.\n<ul>"+
 				"<li>BaseSize=&nbsp;&nbsp;0</code> means branches begin on the bottom of the tree,</li>\n"+
 				"<li>BaseSize=0.5</code> means half of the trunk is branchless,</li>\n"+
 				"<li>BaseSize=1.0</code> branches grow out from the peak of the trunk only.</li></ul>\n"
 		);
-		
+
 		intParam("0BaseSplits",0,Integer.MAX_VALUE,0,"SHAPE",
 				"stem splits at base of trunk",
 				"<strong>BaseSplits</strong> are the stem splits at the top of the first trunk segment.<br>\n"+
@@ -732,19 +712,19 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"use BaseSplits for the first splitting to get a circular<br>\n"+
 				"stem distribution (seen from top).<br>\n"
 		);
-		
+
 //		dblParam("ZScale",0.000001,Double.POSITIVE_INFINITY,1.0,"SHAPE",
 //				"additional Z-scaling (not used)<br>",
 //				"<strong>ZScale</strong> and ZScaleV are not described in the Weber/Penn paper.<br>\n"+
 //				"so theire meaning is unclear and they aren't used at the moment\n"
 //		);
-//		
+//
 //		dblParam("ZScaleV",0.0,Double.POSITIVE_INFINITY,0.0,"SHAPE",
 //				"additional Z-scaling variation (not used)<br>",
 //				"ZScale and <strong>ZScaleV</strong> are not described in the Weber/Penn paper.<br>\n"+
 //				"so theire meaning is unclear and they aren't used at the moment\n"
 //		);
-		
+
 		dblParam("Ratio",0.000001,Double.POSITIVE_INFINITY,0.05,"TRUNK",
 				"trunk radius/length ratio",
 				"<strong>Ratio</strong> is the radius/length ratio of the trunk.<br>\n"+
@@ -753,7 +733,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"Note, that the real base radius could be greater, when Flare<br>\n"+
 				"and/or Lobes are used. (See Flare, Lobes, LobesDepth, RatioPower)\n"
 		);
-		
+
 		dblParam("RatioPower",Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,1.0,
 				"SHAPE","radius reduction",
 				"<strong>RatioPower</strong> is a reduction value for the radius of the\n"+
@@ -770,7 +750,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"Instead you can use it to make stems thinner, which are longer than it's parent.<br>\n"+
 				"(See Ratio)\n"
 		);
-		
+
 		dblParam("Flare",-1.0,Double.POSITIVE_INFINITY,0.5,
 				"TRUNK","exponential expansion at base of tree",
 				"<strong>Flare</strong> makes the trunk base thicker.<ul>\n"+
@@ -780,7 +760,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"Note, that using Lobes make the trunk base thicker too.\n"+
 				"(See Lobes, LobeDepth)\n"
 		);
-		
+
 		intParam("Lobes",0,Integer.MAX_VALUE,0,"TRUNK",
 				"sinusoidal cross-section variation",
 				"With <strong>Lobes</strong> you define how much lobes (this are variations in it's<br>\n"+
@@ -788,14 +768,14 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"cones output, but for mesh only.<br>\n"+
 				"(See LobeDepth too)\n"
 		);
-		
+
 		dblParam("LobeDepth",0,Double.POSITIVE_INFINITY,0,
 				"TRUNK","amplitude of cross-section variation",
 				"<strong>LobeDepth</strong> defines, how deep the lobes of the trunk will be.<br>\n"+
 				"This is the amplitude of the sinusoidal cross-section variations.<br>\n"+
 				"(See Lobes)\n"
 		);
-		
+
 		intParam("Leaves",Integer.MIN_VALUE,Integer.MAX_VALUE,0,
 				"LEAVES","number of leaves per stem",
 				"<strong>Leaves</strong> gives the maximal number of leaves per stem.<br>\n"+
@@ -804,11 +784,11 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"When Leaves is negative, the leaves grow in a fan at\n"+
 				"the end of the stem.\n"
 		);
-		
+
 		lshParam("LeafShape","0","LEAVES","leaf shape id",
 				"<strong>LeafShape</strong> is the shape of the leaf (\"0\" means oval shape).<br>\n"+
 				"The length and width of the leaf are given by LeafScale and LeafScaleX.<br>\n"+
-				
+
 				"When creating a mesh at the moment you can use the following values:<ul>\n"+
 				"<li>\"disc\" - a surface consisting of 6 triangles approximating an oval shape</li>\n"+
 				"<li>\"sphere\" - an ikosaeder approximating a shperical shape,<br>\n"+
@@ -817,30 +797,30 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"lower values are useful for low quality needles or leaves, to reduce mesh size,<br>\n"+
 				"values between 6 and 10 are quite good for big, round leaves.</li>\n"+
 				"<li>any other - same like disc</li></ul>\n"+
-				
+
 				"When using primitives output, the possible values of LeafShape references<br>\n"+
 				"the declarations in arbaro.inc. At the moment there are:<ul>\n"+
-				"<li>\"disc\" the standard oval form of a leaf, defined<br>\n"+
+				"<li>\"Disc\" the standard oval form of a leaf, defined<br>\n"+
 				"as a unit circle of radius 0.5m. The real<br>\n"+
 				"length and width are given by the LeafScale parameters.</li>\n"+
-				"<li>\"sphere\" a spherical form, you can use to<br>\n"+
+				"<li>\"Sphere\" a spherical form, you can use to<br>\n"+
 				"simulate seeds on herbs or knots on branches like in the<br>\n"+
 				"desert bush. You can use the sphere shape for needles too,<br>\n"+
 				"thus they are visible from all sides</li>\n"+
-				"<li>\"palm\" a palm leaf, this are two disc halfs put together<br>\n"+
+				"<li>\"Palm\" a palm leaf, this are two disc halfs put together<br>\n"+
 				"with an angle between them. So they are visible<br>\n"+
 				"also from the side and the light effects are<br>\n"+
-				"more typically, especialy for fan palms seen from small distances.</li>\n"+
+				"more typically, especialy for fan palms seen from close up.</li>\n"+
 				"<li>any other - add your own leaf shape to the file arbaro.inc</li></ul>\n"
 		);
-		
+
 		dblParam("LeafScale",0.000001,Double.POSITIVE_INFINITY,0.2,
 				"LEAVES","leaf length",
 				"<strong>LeafScale</strong> is the length of the leaf in meters.<br>\n"+
 				"The unit leaf is scaled in z-direction (y-direction in Povray)\n"+
 				"by this factor. (See LeafShape, LeafScaleX)\n"
 		);
-		
+
 		dblParam("LeafScaleX",0.000001,Double.POSITIVE_INFINITY,0.5,"LEAVES",
 				"fractional leaf width",
 				"<strong>LeafScaleX</strong> is the fractional width of the leaf relativly to it's length. So<ul>\n"+
@@ -851,14 +831,14 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"So the spherical leaf is transformed to a needle 5cm long and<br>\n"+
 				"1mm wide by LeafScale=0.05 and LeafScaleX=0.02.\n"
 		);
-		
+
 		dblParam("LeafBend",0,1,0.3,"LEAVES","leaf orientation toward light",
 				"With <strong>LeafBend</strong> you can influence, how much leaves are oriented<br>\n"+
 				"outside and upwards.<br>Values near 0.5 are good. For low values the leaves<br>\n"+
 				"are oriented to the stem, for high value to the light.<br>\n"+
 				"For trees with long leaves like palms you should use lower values.\n"
 		);
-		
+
 		dblParam("LeafStemLen",Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,0.5,
 				"LEAVES","fractional leaf stem length",
 				"<strong>LeafStemLen</strong is the length of the (virtual) leaf stem.<br>\n"+
@@ -869,23 +849,23 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"or some herbs you need a LeafStemLen near 0. Negative stem length is<br>\n"+
 				"allowed for special cases."
 		);
-		
+
 		intParam ("LeafDistrib",0,8,4,"LEAVES","leaf distribution",
 				"<strong>LeafDistrib</strong> determines how leaves are distributed over<br>\n"+
 				"the branches of the last but one stem level. It takes the same<br>\n"+
 				"values like Shape, meaning 3 = even distribution, 0 = most leaves<br>\n"+
 				"outside. Default is 4 (some inside, more outside)."
 		);
-		
+
 		dblParam("LeafQuality",0.000001,1.0,1.0,"QUALITY","leaf quality/leaf count reduction",
 				"With a <strong>LeafQuality</strong> less then 1.0 you can reduce the number of leaves<br>\n"+
 				"to improve rendering speed and memory usage. The leaves are scaled<br>\n"+
 				"with the same amount to get the same coverage.<br>\n"+
 				"For trees in the background of the scene you will use a reduced<br>\n"+
 				"LeafQuality around 0.9. Very small values would cause strange results.<br>\n"+
-				"(See LeafScale)" 
+				"(See LeafScale)"
 		);
-		
+
 		dblParam("Smooth",0.0,1.0,0.5,"QUALITY","smooth value for mesh creation",
 				"Higher <strong>Smooth</strong> values creates meshes with more vertices and<br>\n"+
 				"adds normal vectors to them for some or all branching levels.<br>\n"+
@@ -894,7 +874,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"smooth value could be best. E.g. for shave-grass a low smooth value<br>\n"+
 				"is preferable, because this herb has angular stems."
 		);
-		
+
 		dblParam("AttractionUp",Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,0.0,
 				"SHAPE","upward/downward growth tendency",
 				"<strong>AttractionUp</strong> is the tendency of stems with level>=2 to grow upwards<br>\n"+
@@ -904,25 +884,25 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"could cause overcorrection resulting in a snaking oscillation.<br>\n"+
 				"As an example see the weeping willow, which has a negative AttractionUp value.\n"
 		);
-		
+
 		dblParam("PruneRatio",0.0,1.0,0.0,"PRUNING",
 				"fractional effect of pruning",
 				"A <strong>PruneRatio</strong> of 1.0 means all branches are inside<br>\n"+
 				"the envelope. 0.0 means no pruning.\n"
 		);
-		
+
 		dblParam("PruneWidth",0.0,1.0,0.5,"PRUNING","width of envelope peak",
 				"<strong>PruneWidth</strong> is the fractional width of the pruning envelope at the<br>\n"+
 				"peak. A value of 0.5 means the tree is half as wide as high.<br>\n"+
 				"This parameter is used for the shape \"envelope\" too, even if PruneRatio is off.\n"
 		);
-		
+
 		dblParam("PruneWidthPeak",0.0,1.0,0.5,"PRUNING","position of envelope peak",
 				"<strong>PruneWidthPeak</strong> is the fractional height of the envelope peak.<br>\n"+
 				"A value of 0.5 means upper part and lower part of the envelope have the same height.<br>\n"+
 				"This parameter is used for the shape \"envelope\" too, even if PruneRatio is off.\n"
 		);
-		
+
 		dblParam("PrunePowerLow",0.0,Double.POSITIVE_INFINITY,0.5,"PRUNING",
 				"curvature of envelope",
 				"<strong>PrunePowerLow</strong> describes the envelope curve below the peak.<br>\n"+
@@ -930,7 +910,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"lower values convex curve.<br>\n"+
 				"This parameter is used for the shape \"envelope\" too, even if PruneRatio is off.\n"
 		);
-		
+
 		dblParam("PrunePowerHigh",0.0,Double.POSITIVE_INFINITY,0.5,"PRUNING",
 				"curvature of envelope",
 				"<strong>PrunePowerHigh</strong> describes the envelope curve above the peak.<br>\n"+
@@ -938,7 +918,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"lower values convex curve.<br>\n"+
 				"This parameter is used for the shape \"envelope\" too, even if PruneRatio is off.\n"
 		);
-		
+
 		dblParam("0Scale",0.000001,Double.POSITIVE_INFINITY,1.0,
 				"TRUNK","extra trunk scaling",
 				"<strong>0Scale</strong> and 0ScaleV makes the trunk thicker.<br>\n"+
@@ -951,7 +931,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"Ratio/RatioPower parameters and the periodic tapering (0Taper > 2.0)<br>\n"+
 				"could be scaled, so that the sections are elongated spheres.\n"
 		);
-		
+
 		dblParam("0ScaleV",0.0,Double.POSITIVE_INFINITY,0.0,"TRUNK",
 				"variation for extra trunk scaling",
 				"0Scale and <strong>0ScaleV</strong> makes the trunk thicker. This parameters<br>\n"+
@@ -962,7 +942,7 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"mesh of the trunk. But use with care, because the mesh<br>\n"+
 				"could got fissures when using too big values.<br>\n"
 		);
-		
+
 		dbl4Param("nLength",0.0000001,Double.POSITIVE_INFINITY,1.0,0.5,0.5,0.5,
 				"LENTAPER","fractional trunk scaling",
 				"<strong>0Length</strong> and 0LengthV give the fractional length of the<br>\n"+
@@ -972,22 +952,22 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"<strong>nLength</strong> and nLengthV define the fractional length of a stem<br>\n"+
 				"relating to the length of theire parent.<br>\n"
 		);
-		
+
 		dbl4Param("nLengthV",0.0,Double.POSITIVE_INFINITY,0.0,0.0,0.0,0.0,
 				"LENTAPER","variation of fractional trunk scaling",
 				"<strong>nLengthV</strong> is the variation of the length given by nLength.<br>\n"
 		);
-		
+
 		dbl4Param("nTaper",0.0,2.99999999,1.0,1.0,1.0,1.0,
 				"LENTAPER","cross-section scaling",
 				"<strong>nTaper</strong> is the tapering of the stem along its length.<ul>\n"+
-				"<li>0 - non-tapering cylinder</li>\n"+
-				"<li>1 - taper to a point (cone)</li>\n"+
-				"<li>2 - taper to a spherical end</li>\n"+
-				"<li>3 - periodic tapering (concatenated spheres)</li></ul>\n"+
+				"<li>0 - None (Cylinder)</li>\n"+
+				"<li>1 - Taper to Point (cone)</li>\n"+
+				"<li>2 - Taper to Spherical End</li>\n"+
+				"<li>3 - Periodic (Concatenated Spheres)</li></ul>\n"+
 				"You can use fractional values, to get intermediate results.<br>\n"
 		);
-		
+
 		dbl4Param("nSegSplits",0,Double.POSITIVE_INFINITY,0,0,0,0,
 				"SPLITTING","stem splits per segment",
 				"<strong>nSegSplits</strong> determines how much splits per segment occures.<br><br>\n"+
@@ -996,39 +976,39 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"for the trunk you should use 0BaseSplits for the first split, <br>\n"+
 				"otherwise the tree will tend to one side."
 		);
-		
+
 		dbl4Param("nSplitAngle",0,180,0,0,0,0,"SPLITTING",
 				"splitting angle",
 				"<strong>nSplitAngle</strong> is the vertical splitting angle. A horizontal diverging<br>\n"+
 				"angle will be added too, but this one you cannot influence with parameters.<br>\n"+
 				"The declination of the splitting branches won't exceed the splitting angle.<br>\n"
 		);
-		
+
 		dbl4Param("nSplitAngleV",0,180,0,0,0,0,"SPLITTING",
 				"splitting angle variation",
 				"<strong>nSplitAngleV</strong> is the variation of the splitting angle. See nSplitAngle.<br>\n"
 		);
-		
+
 		int4Param("nCurveRes",1,Integer.MAX_VALUE,3,3,1,1,
 				"CURVATURE","curvature resolution",
 				"<strong>nCurveRes</strong> determines how many segments the branches consist of.<br><br>\n"+
 				"Normally you will use higher values for the first levels, and low<br>\n"+
 				"values for the higher levels.<br>\n"
 		);
-		
+
 		dbl4Param("nCurve",Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,0,0,0,0,
 				"CURVATURE","curving angle",
 				"<strong>nCurve</strong> is the angle the branches are declined over theire whole length.<br>\n"+
 				"If nCurveBack is used, the curving angle is distributed only over the<br>\n"+
 				"first half of the stem.<br>\n"
 		);
-		
+
 		dbl4Param("nCurveV",-90,Double.POSITIVE_INFINITY,0,0,0,0,
 				"CURVATURE","curving angle variation",
 				"<strong>nCurveV</strong> is the variation of the curving angle. See nCurve, nCurveBack.<br>\n"+
 				"A negative value means helical curvature<br>\n"
 		);
-		
+
 		dbl4Param("nCurveBack",Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,0,0,0,0,
 				"CURVATURE","curving angle upper stem half",
 				"Using <strong>nCurveBack</strong> you can give the stem an S-like shape.<br>\n"+
@@ -1037,12 +1017,12 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"It's also possible to give both parametera the same sign to<br>\n"+
 				"get different curving over the stem length, instead of a S-shape<br>\n"
 		);
-		
+
 		dbl4Param("nDownAngle",-179.9999999,179.999999,0,30,30,30,
 				"BRANCHING","angle from parent",
 				"<strong>nDownAngle</strong> is the angle between a stem and it's parent.<br>\n"
 		);
-		
+
 		dbl4Param("nDownAngleV",-179.9999999,179.9999999,0,0,0,0,
 				"BRANCHING","down angle variation",
 				"<strong>nDownAngleV</strong> is the variation of the downangle. See nDownAngle.<br>\n"+
@@ -1050,26 +1030,26 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"length of the stem, so that the lower branches have a bigger<br>\n"+
 				"downangle then the higher branches.<br>\n"
 		);
-		
+
 		dbl4Param("nRotate",-360,360,0,120,120,120,
 				"BRANCHING","spiraling angle",
 				"<strong>nRotate</strong> is the angle, the branches are rotating around the parent<br>\n"+
 				"If nRotate is negative the branches are located on alternating<br>\n"+
 				"sides of the parent.<br>\n"
 		);
-		
+
 		dbl4Param("nRotateV",-360,360,0,0,0,0,
 				"BRANCHING","spiraling angle variation",
 				"<strong>nRotateV</strong> is the variation of nRotate.<br>\n"
 		);
-		
+
 		int4Param("nBranches",0,Integer.MAX_VALUE,1,10,5,5,
 				"BRANCHING","number of branches",
 				"<strong>nBranches</strong> is the maximal number of branches on a parent stem.<br>\n"+
 				"The number of branches are reduced proportional to the<br>\n"+
 				"relative length of theire parent.<br>\n"
 		);
-		
+
 		dbl4Param("nBranchDist",0,1,0,1,1,1,
 				"BRANCHING","branch distribution along the segment",
 				"<strong>nBranchDist</strong> is an additional parameter of Arbaro. It influences the<br>\n"+
@@ -1078,12 +1058,12 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 				"original model. With 0.0 all branches grow from the segments<br>\n"+
 				"base like for conifers.<br>\n"
 		);
-		
-		
+
+
 //		outParam("OutFormat",MESH,CONES,MESH,
 //				"RENDER","the output file format",
 //				"<strong>OutFormat</strong> defines the format of the outputfile for rendering.<br>\n");
-//		
+//
 //		intParam("RenderWidth",15,6000,600,
 //				"RENDER","the width of the rendered image",
 //				"<strong>RenderWidth</strong> is the width of the rendered image,<br>\n"+
@@ -1093,64 +1073,44 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 //				"RENDER","the height of the rendered image",
 //				"<strong>RenderHeight</strong> is the height of the rendered image,<br>\n"+
 //				"if you render a scene with the tree from Arbaro.");
-//		
+//
 //		intParam("Seed",0,Integer.MAX_VALUE,13,
 //				"RENDER","the random seed",
 //				"<strong>Seed</strong> is the seed for initializing the random generator<br>\n"+
 //				"making the tree individual. So you can think of it as the tree's seed too.");
 
 	}
-	
+
 	public void readFromCfg(InputStream is) {
 		CfgTreeParser parser = new CfgTreeParser();
 		try {
-			// suppress warnings
-			AbstractParam.loading=true;
-			clearParams();
 			parser.parse(is,this);
-			AbstractParam.loading=false;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public void readFromXML(InputStream is) {
 		try {
 			XMLTreeParser parser = new XMLTreeParser();
-			// suppress warnings
-			AbstractParam.loading=true;
-			clearParams();
 			parser.parse(new InputSource(is),this);
-			AbstractParam.loading=false;
 		} catch (Exception e) {
 			throw new ParamException(e.getMessage());
 		}
 	}
-	
-	public AbstractParam param(String parname) {
+
+	public AbstractParam getParam(String parname) {
 		return (AbstractParam)paramDB.get(parname);
-	}
-	
-	public Param getParam(String parname) {
-		return (AbstractParam)paramDB.get(parname);
-	}
-	
-	public String[] getValues(String paramName) {
-		if (paramName.equals("Shape")) {
-			return ShapeParam.values();
-		} else if (paramName.equals("LeafShape")) {
-			return LeafShapeParam.values();
-		} else throw new UnknownParameterTypeException();
 	}
 
 	public void addChangeListener(ChangeListener l) {
 		listenerList.add(ChangeListener.class, l);
 	}
-	
+
 	public void removeChangeListener(ChangeListener l) {
 		listenerList.remove(ChangeListener.class, l);
 	}
-	
+
 	protected void fireStateChanged() {
 		Object [] listeners = listenerList.getListenerList();
 		for (int i = listeners.length -2; i>=0; i-=2) {
@@ -1162,111 +1122,103 @@ public class Params implements ParamReader, ParamWriter, ParamEditing {
 			}
 		}
 	}
-	
+
 	/**
 	 * Enables or disables params depending on other
-	 * params values. 
+	 * params values.
 	 */
 	public void enableDisable() {
 		boolean enable;
-		
+
 		// ############ general params ##############
-		
+
 		// disable Z-Scale parameters (they are not used)
 //		getParam("ZScale").setEnabled(false);
 //		getParam("ZScaleV").setEnabled(false);
-		
+
 		// enable RatioPower/Leaves if Levels>1
-		enable = (((IntParam)param("Levels")).intValue() > 1);
-		param("RatioPower").setEnabled(enable);
-		param("Leaves").setEnabled(enable);
-		
+		enable = (((IntParam)getParam("Levels")).intValue() > 1);
+		getParam("RatioPower").setEnabled(enable);
+		getParam("Leaves").setEnabled(enable);
+
 		// enable leaf params if Leaves != 0
-		enable = (((IntParam)param("Leaves")).intValue() != 0 &&
-				((IntParam)param("Levels")).intValue() > 1);
-		param("LeafShape").setEnabled(enable);
-		param("LeafScale").setEnabled(enable);
-		param("LeafScaleX").setEnabled(enable);
-		param("LeafBend").setEnabled(enable);
-		param("LeafDistrib").setEnabled(enable);
-		param("LeafQuality").setEnabled(enable);
-		param("LeafStemLen").setEnabled(enable);
-		
+		enable = (((IntParam)getParam("Leaves")).intValue() != 0 &&
+				((IntParam)getParam("Levels")).intValue() > 1);
+		getParam("LeafShape").setEnabled(enable);
+		getParam("LeafScale").setEnabled(enable);
+		getParam("LeafScaleX").setEnabled(enable);
+		getParam("LeafBend").setEnabled(enable);
+		getParam("LeafDistrib").setEnabled(enable);
+		getParam("LeafQuality").setEnabled(enable);
+		getParam("LeafStemLen").setEnabled(enable);
+
 		// enable Pruning parameters, if PruneRatio>0 or Shape=envelope
-		enable = (((IntParam)param("Shape")).intValue() == 8 ||
-				((FloatParam)param("PruneRatio")).doubleValue()>0);
-		param("PrunePowerHigh").setEnabled(enable);
-		param("PrunePowerLow").setEnabled(enable);
-		param("PruneWidth").setEnabled(enable);
-		param("PruneWidthPeak").setEnabled(enable);
-		
+		enable = (((IntParam)getParam("Shape")).intValue() == 8 ||
+				((FloatParam)getParam("PruneRatio")).doubleValue()>0);
+		getParam("PrunePowerHigh").setEnabled(enable);
+		getParam("PrunePowerLow").setEnabled(enable);
+		getParam("PruneWidth").setEnabled(enable);
+		getParam("PruneWidthPeak").setEnabled(enable);
+
 		// enable LobeDepth if Lobes>0
-		enable = (((IntParam)param("Lobes")).intValue() > 0);
-		param("LobeDepth").setEnabled(enable);
-		
+		enable = (((IntParam)getParam("Lobes")).intValue() > 0);
+		getParam("LobeDepth").setEnabled(enable);
+
 		// enable AttractionUp if Levels>2
-		enable = (((IntParam)param("Levels")).intValue() > 2);
-		param("AttractionUp").setEnabled(enable);
-		
+		enable = (((IntParam)getParam("Levels")).intValue() > 2);
+		getParam("AttractionUp").setEnabled(enable);
+
 		// ############## disable unused levels ###########
-		
+
 		for (int i=0; i<4; i++) {
-			
-			enable = i<((IntParam)param("Levels")).intValue();
-			
-			param(""+i+"Length").setEnabled(enable);
-			param(""+i+"LengthV").setEnabled(enable);
-			param(""+i+"Taper").setEnabled(enable);
-			
-			param(""+i+"Curve").setEnabled(enable);
-			param(""+i+"CurveV").setEnabled(enable);
-			param(""+i+"CurveRes").setEnabled(enable);
-			param(""+i+"CurveBack").setEnabled(enable);
-			
-			param(""+i+"SegSplits").setEnabled(enable);
-			param(""+i+"SplitAngle").setEnabled(enable);
-			param(""+i+"SplitAngleV").setEnabled(enable);
-			
-			param(""+i+"BranchDist").setEnabled(enable);
-			param(""+i+"Branches").setEnabled(enable);
-			
+
+			enable = i<((IntParam)getParam("Levels")).intValue();
+
+			getParam(""+i+"Length").setEnabled(enable);
+			getParam(""+i+"LengthV").setEnabled(enable);
+			getParam(""+i+"Taper").setEnabled(enable);
+
+			getParam(""+i+"Curve").setEnabled(enable);
+			getParam(""+i+"CurveV").setEnabled(enable);
+			getParam(""+i+"CurveRes").setEnabled(enable);
+			getParam(""+i+"CurveBack").setEnabled(enable);
+
+			getParam(""+i+"SegSplits").setEnabled(enable);
+			getParam(""+i+"SplitAngle").setEnabled(enable);
+			getParam(""+i+"SplitAngleV").setEnabled(enable);
+
+			getParam(""+i+"BranchDist").setEnabled(enable);
+			getParam(""+i+"Branches").setEnabled(enable);
+
 			// down and rotation angle of last level are
 			// used for leaves
-			enable = enable || 
-			(((IntParam)param("Leaves")).intValue() != 0 &&
-					i==((IntParam)param("Levels")).intValue());
-			
-			param(""+i+"DownAngle").setEnabled(enable);
-			param(""+i+"DownAngleV").setEnabled(enable);
-			param(""+i+"Rotate").setEnabled(enable);
-			param(""+i+"RotateV").setEnabled(enable);
+			enable = enable ||
+			(((IntParam)getParam("Leaves")).intValue() != 0 &&
+					i==((IntParam)getParam("Levels")).intValue());
+
+			getParam(""+i+"DownAngle").setEnabled(enable);
+			getParam(""+i+"DownAngleV").setEnabled(enable);
+			getParam(""+i+"Rotate").setEnabled(enable);
+			getParam(""+i+"RotateV").setEnabled(enable);
 		}
-		
-		for (int i=0; i<((IntParam)param("Levels")).intValue() && i<4; i++) {
-			
+
+		for (int i=0; i<((IntParam)getParam("Levels")).intValue() && i<4; i++) {
+
 			// enable nSplitAngle/nSplitAngleV if nSegSplits>0
-			enable = (((FloatParam)param(""+i+"SegSplits")).doubleValue()>0) ||
-			(i==0 && ((IntParam)param("0BaseSplits")).intValue()>0);
-			param(""+i+"SplitAngle").setEnabled(enable);
-			param(""+i+"SplitAngleV").setEnabled(enable);
-			
+			enable = (((FloatParam)getParam(""+i+"SegSplits")).doubleValue()>0) ||
+			(i==0 && ((IntParam)getParam("0BaseSplits")).intValue()>0);
+			getParam(""+i+"SplitAngle").setEnabled(enable);
+			getParam(""+i+"SplitAngleV").setEnabled(enable);
+
 			// enable Curving parameters only when CurveRes>1
-			enable = (((IntParam)param(""+i+"CurveRes")).intValue()>1);
-			param(""+i+"Curve").setEnabled(enable);
-			param(""+i+"CurveV").setEnabled(enable);
-			param(""+i+"CurveBack").setEnabled(enable);
+			enable = (((IntParam)getParam(""+i+"CurveRes")).intValue()>1);
+			getParam(""+i+"Curve").setEnabled(enable);
+			getParam(""+i+"CurveV").setEnabled(enable);
+			getParam(""+i+"CurveBack").setEnabled(enable);
 		}
-		
+
 	}
 
-	public void setPreview(boolean preview) {
-		this.preview = preview;
-	}
-
-	public void setStopLevel(int stopLevel) {
-		this.stopLevel = stopLevel;
-	}
-	
 };
 
 

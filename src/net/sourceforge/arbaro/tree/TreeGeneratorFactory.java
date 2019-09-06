@@ -22,27 +22,26 @@
 
 package net.sourceforge.arbaro.tree;
 
-import net.sourceforge.arbaro.params.ParamManager;
-import net.sourceforge.arbaro.tree.impl.TreeGeneratorImpl;
+import net.sourceforge.arbaro.params.Params;
 
 /**
  * @author wolfram
  *
  */
 public class TreeGeneratorFactory {
-//	static public TreeGenerator createTreeGenerator() {
-//		return new TreeGeneratorImpl();
-//	}
+	static public TreeGenerator createTreeGenerator() {
+		return new TreeGeneratorImpl();
+	}
 
-	static public TreeGenerator createTreeGenerator(ParamManager params) {
+	static public TreeGenerator createTreeGenerator(Params params) {
 		return new TreeGeneratorImpl(params);
 	}
 
-//	static public TreeGenerator createShieldedTreeGenerator() {
-//		return new ShieldedTreeGenerator(new TreeGeneratorImpl());
-//	}
+	static public TreeGenerator createShieldedTreeGenerator() {
+		return new ShieldedTreeGenerator(new TreeGeneratorImpl());
+	}
 
-	static public TreeGenerator createShieldedTreeGenerator(ParamManager params) {
+	static public TreeGenerator createShieldedTreeGenerator(Params params) {
 		return new ShieldedTreeGenerator(new TreeGeneratorImpl(params));
 	}
 

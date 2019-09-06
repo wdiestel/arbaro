@@ -22,8 +22,8 @@
 
 package net.sourceforge.arbaro.gui;
 
-import net.sourceforge.arbaro.params.ParamManager;
-import net.sourceforge.arbaro.params.ParamEditing;
+import net.sourceforge.arbaro.params.IntParam;
+import net.sourceforge.arbaro.params.Params;
 import net.sourceforge.arbaro.transformation.Vector;
 import net.sourceforge.arbaro.tree.TreeGenerator;
 import net.sourceforge.arbaro.tree.TreeGeneratorFactory;
@@ -33,7 +33,7 @@ import net.sourceforge.arbaro.mesh.Mesh;
 import net.sourceforge.arbaro.mesh.LeafMesh;
 import net.sourceforge.arbaro.mesh.MeshGenerator;
 import net.sourceforge.arbaro.mesh.MeshGeneratorFactory;
-import net.sourceforge.arbaro.feedback.Progress;
+import net.sourceforge.arbaro.export.Progress;
 
 import java.io.PrintWriter;
 
@@ -48,44 +48,40 @@ import javax.swing.event.EventListenerList;
  * and modifies the level and branching parameters to
  * calculate and draw only parts of the tree, reducing
  * calculation time as well.
- * 
+ *
  * @author wdiestel
  *
  */
 public final class PreviewTree implements Tree {
-	// preview always shows this levels and 
-	// the previous levels stems 
+	// preview always shows this levels and
+	// the previous levels stems
 	int showLevel=1;
-	int seed;
-	ParamManager originalParams;
+	Params originalParams;
 	//Params params;
 	Mesh mesh;
 	LeafMesh leafMesh;
 	MeshGenerator meshGenerator;
 //	TreeGenerator treeGenerator;
-	
+
 	Tree tree;
-	
+
 	protected ChangeEvent changeEvent = null;
 	protected EventListenerList listenerList = new EventListenerList();
 
 	/**
 	 * @param params tree parameters
 	 */
-	public PreviewTree(ParamManager params/*, MeshGenerator meshGenerator,
-			TreeGenerator treeGenerator*/, int seed) {
+	public PreviewTree(Params params/*, MeshGenerator meshGenerator,
+			TreeGenerator treeGenerator*/) {
 		this.originalParams=params;
-		this.seed = seed;
 //		this.meshGenerator = meshGenerator;
 //		this.treeGenerator = treeGenerator;
 		//this.params = new Params(params);
 	}
-	
-//	public Params getParams() { return originalParams; }
 
-	public void setParamManager(ParamManager params) { 
-		this.originalParams = params; 
-	}
+	public Params getParams() { return originalParams; }
+
+	public void setParams(Params params) { this.originalParams = params; }
 
 	// delegate interface methods to the tree
 	public boolean traverseTree(TreeTraversal traversal)
@@ -104,70 +100,69 @@ public final class PreviewTree implements Tree {
 	public int getSeed() { return tree.getSeed(); }
 
 	public double getHeight() { return tree.getHeight(); }
-	
+
 	public double getWidth() { return tree.getWidth(); }
-	
+
 	public void paramsToXML(PrintWriter w) {
 		throw new UnsupportedOperationException("Not implemented.");
 	}
-	
+
 	public String getSpecies() { return tree.getSpecies(); }
-	
+
+	public double getScale() { return tree.getScale(); }
+
 	public int getLevels() { return tree.getLevels(); }
-	
+
 	public String getLeafShape() { return tree.getLeafShape(); }
-	
+
 	public double getLeafWidth() { return tree.getLeafWidth(); }
-	
+
 	public double getLeafLength() { return tree.getLeafLength(); }
-	
+
 	public double getLeafStemLength() { return tree.getLeafStemLength(); };
-	
+
 	public String getVertexInfo(int level) { return tree.getVertexInfo(level); };
-	
+
 	public void setShowLevel(int l) {
-		ParamEditing par = originalParams.getParamEditing();
-		int Levels = par.getLevels(); 
+		int Levels = ((IntParam)(originalParams.getParam("Levels"))).intValue();
 		if (l>Levels) showLevel=Levels;
 		else showLevel=l;
 	}
-	
+
 	public int getShowLevel() {
 		return showLevel;
 	}
 
 	public void remake(boolean doFireStateChanged) {
 			//clear();
-			ParamManager previewParams = new ParamManager(originalParams);
-			ParamEditing par = previewParams.getParamEditing();
-			par.setPreview(true);
+			Params params = new Params(originalParams);
+			params.preview=true;
 //			previewTree = new Tree(originalTree);
-			
+
 			// manipulate params to avoid making the whole tree
 			// FIXME: previewTree.Levels <= tree.Levels
-			int Levels = originalParams.getParamEditing().getLevels(); 
+			int Levels = ((IntParam)(originalParams.getParam("Levels"))).intValue();
 			if (Levels>showLevel+1) {
-				par.setLevels(showLevel+1);
-				par.getParam("Leaves").setValue("0");
-			} 
+				params.setParam("Levels",""+(showLevel+1));
+				params.setParam("Leaves","0");
+			}
 			for (int i=0; i<showLevel; i++) {
-				par.getParam(""+i+"Branches").setValue("1");
+				params.setParam(""+i+"Branches","1");
 				// if (((FloatParam)previewTree.getParam(""+i+"DownAngleV")).doubleValue()>0)
-				par.getParam(""+i+"DownAngleV").setValue("0");
+				params.setParam(""+i+"DownAngleV","0");
 			}
 
 			Progress progress = new Progress();
-			TreeGenerator treeGenerator = TreeGeneratorFactory.createShieldedTreeGenerator(previewParams);
-		    treeGenerator.setSeed(seed);
-			tree = treeGenerator.makeTree(progress);
-		    
-		    MeshGenerator meshGenerator = MeshGeneratorFactory.createShieldedMeshGenerator(true); // useQuads		    
+			TreeGenerator treeGenerator = TreeGeneratorFactory.createShieldedTreeGenerator(params);
+		    tree = treeGenerator.makeTree(progress);
+
+		    MeshGenerator meshGenerator = MeshGeneratorFactory.createShieldedMeshGenerator(true); // useQuads
 			mesh = meshGenerator.createStemMesh(tree,progress);
 			leafMesh = meshGenerator.createLeafMesh(tree,true);
-	
+
 			if (doFireStateChanged)	fireStateChanged();
 	}
-	
+
 	public Mesh getMesh() {
 		return mesh;
 	}
@@ -179,11 +174,11 @@ public final class PreviewTree implements Tree {
 	public void addChangeListener(ChangeListener l) {
 		listenerList.add(ChangeListener.class, l);
 	}
-	
+
 	public void removeChangeListener(ChangeListener l) {
 		listenerList.remove(ChangeListener.class, l);
 	}
-	
+
 	protected void fireStateChanged() {
 		Object [] listeners = listenerList.getListenerList();
 		for (int i = listeners.length -2; i>=0; i-=2) {
@@ -196,5 +191,5 @@ public final class PreviewTree implements Tree {
 		}
 	}
 
-	
+
 }

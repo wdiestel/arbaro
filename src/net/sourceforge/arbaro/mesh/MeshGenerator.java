@@ -1,6 +1,6 @@
 package net.sourceforge.arbaro.mesh;
 
-import net.sourceforge.arbaro.feedback.Progress;
+import net.sourceforge.arbaro.export.Progress;
 import net.sourceforge.arbaro.tree.Tree;
 
 public interface MeshGenerator {
