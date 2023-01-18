@@ -1,5 +1,7 @@
 Arbaro is a Java-implementation of the tree generating algorithm described
 in Jason Weber & Joseph Penn: "Creation and Rendering of Realistic Trees".
+(https://courses.cs.duke.edu/fall01/cps124/resources/p119-weber.pdf)
+
 It is reading in XML-files with the parameters of the trees and
 writing out povray code.
 
