@@ -45,7 +45,7 @@ public class arbaro {
 	static void println() { System.err.println(); }
 
 	public static final String programName =
-		"Arbaro 1.9.9 - creates trees objects for rendering from xml parameter files\n"+
+		"Arbaro 1.9.9b - creates trees objects for rendering from xml parameter files\n"+
 		"(c) 2003-2012 by Wolfram Diestel <diestel@steloj.de> (GPL see file COPYING)\n"+
 	        "RIB support added by Moritz Moeller\n";
 

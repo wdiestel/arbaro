@@ -224,7 +224,8 @@ final class OBJExporter extends MeshExporter {
 	
 	public void doWrite()  {
 		smoothingGroup=1;
-
+		w.println("mtllib Arbaro.mtl");
+		
 		long objCount = 
 			(tree.getStemCount()
 			+tree.getLeafCount())*(outputNormals? 2 : 1); 

@@ -27,6 +27,7 @@ import java.awt.*;
 import java.awt.event.*;
 //import java.util.zip.GZIPOutputStream;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.sourceforge.arbaro.tree.Tree;
 import net.sourceforge.arbaro.tree.TreeGenerator;
@@ -72,7 +73,8 @@ public class ExportDialog {
 	TreeCreationTask treeCreationTask;
 	JButton startButton;
 	JButton cancelButton;
-
+	JButton mtlExportButton;
+	
 	String fileSep = System.getProperty("file.separator");
 
 	public ExportDialog(JFrame parent, int seed, /*ExporterFactory exporterFactory,*/ Params params, Config cfg, boolean render) {
@@ -108,6 +110,63 @@ public class ExportDialog {
 		frame.setVisible(true);
 	}
 
+	private void createMTLFile(File parentDir) {
+	    File mtlFile = new File(parentDir, "Arbaro.mtl");
+	    
+	    try (PrintWriter writer = new PrintWriter(new FileWriter(mtlFile))) {
+	    	writer.println("newmtl trunk");
+	    	writer.println("illum 2");
+	    	writer.println("Ka 0.14901961 0.11372549 0.039215688");
+	    	writer.println("Kd 0.14901961 0.11372549 0.039215688");
+	    	writer.println("Ks 0.75 0.75 0.75");
+	    	writer.println("Ns 96.0");
+	    	writer.println("Ni 1");
+	    	writer.println("d 1");
+	    	writer.println();
+
+	    	writer.println("newmtl stems_1");
+	    	writer.println("illum 2");
+	    	writer.println("Ka 0.20784314 0.16862746 0.05882353");
+	    	writer.println("Kd 0.20784314 0.16862746 0.05882353");
+	    	writer.println("Ks 0.75 0.75 0.75");
+	    	writer.println("Ns 96.0");
+	    	writer.println("Ni 1");
+	    	writer.println("d 1");
+	    	writer.println();
+
+	    	writer.println("newmtl stems_2");
+	    	writer.println("illum 2");
+	    	writer.println("Ka 0.4 0.31764707 0.10980392");
+	    	writer.println("Kd 0.4 0.31764707 0.10980392");
+	    	writer.println("Ks 0.75 0.75 0.75");
+	    	writer.println("Ns 96.0");
+	    	writer.println("Ni 1");
+	    	writer.println("d 1");
+	    	writer.println();
+
+	    	writer.println("newmtl stems_3");
+	    	writer.println("illum 2");
+	    	writer.println("Ka 0.4 0.31764707 0.10980392");
+	    	writer.println("Kd 0.4 0.31764707 0.10980392");
+	    	writer.println("Ks 0.75 0.75 0.75");
+	    	writer.println("Ns 96.0");
+	    	writer.println("Ni 1");
+	    	writer.println("d 1");
+	    	writer.println();
+
+	    	writer.println("newmtl leaves");
+	    	writer.println("illum 2");
+	    	writer.println("Ka 0.0 0.43529412 0.0");
+	    	writer.println("Kd 0.0 0.43529412 0.0");
+	    	writer.println("Ks 0.75 0.75 0.75");
+	    	writer.println("Ns 96.0");
+	    	writer.println("Ni 1");
+	    	writer.println("d 1");
+	    } catch (IOException ex) {
+	        JOptionPane.showMessageDialog(frame, "Failed to create MTL file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	    }
+	}
+	
 	void createGUI() {
 		tabbedPane = new JTabbedPane();
 
@@ -133,10 +192,14 @@ public class ExportDialog {
 		cancelButton = new JButton("Close");
 		cancelButton.addActionListener(new CancelButtonListener());
 
+		mtlExportButton = new JButton("Create MTL");
+		mtlExportButton.addActionListener(new mtlExportButtonButtonListener());
+		
 		JPanel buttons = new JPanel();
 		buttons.add(startButton);
 		buttons.add(cancelButton);
-
+		buttons.add(mtlExportButton);
+		
 		JPanel panel = new JPanel();
 		//panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
 		panel.setLayout(new BorderLayout());
@@ -548,6 +611,39 @@ public class ExportDialog {
 		}
 	}
 
+	class mtlExportButtonButtonListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			// Create a file chooser with an OBJ filter
+	        JFileChooser fileChooser = new JFileChooser();
+	        fileChooser.setFileFilter(new FileNameExtensionFilter("Wavefront OBJ Files (*.obj)", "obj"));
+	        fileChooser.setDialogTitle("Select PATH of *.obj file");
+	        
+	        // Show the save dialog
+	        int result = fileChooser.showSaveDialog(frame);
+	        
+	        if (result == JFileChooser.APPROVE_OPTION) {
+	            File selectedFile = fileChooser.getSelectedFile();
+	            
+	            // Ensure the file has the .obj extension
+	            String filePath = selectedFile.getAbsolutePath();
+	            if (!filePath.toLowerCase().endsWith(".obj")) {
+	                selectedFile = new File(filePath + ".obj");
+	            }
+	            
+	            // Create the MTL file in the same directory
+	            File parentDir = selectedFile.getParentFile();
+	            createMTLFile(parentDir);
+	            
+	            // Notify the user that the MTL file was created
+	            JOptionPane.showMessageDialog(frame, 
+	                "MTL file created successfully at:\n" + parentDir.getAbsolutePath(), 
+	                "Success", JOptionPane.INFORMATION_MESSAGE);
+	        }
+			
+		}		
+	}
+	
+	
 	class CancelButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e){
 			if (treeCreationTask.notActive())
@@ -579,6 +675,7 @@ public class ExportDialog {
 				startButton.setEnabled(true);
 				startButton.setText("Restart");
 				cancelButton.setText("Close");
+				mtlExportButton.setText("Create MTL");
 			} else {
 //				progressMonitor.setProgress((int)(100*createTreeTask.getProgress()));
 //				progressMonitor.setNote(createTreeTask.getProgressMsg());
@@ -794,12 +891,3 @@ class TreeCreationTask {
 		}
 	};
 }
-
-
-
-
-
-
-
-
-
