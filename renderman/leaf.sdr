@@ -1,0 +1,55 @@
+#!version 2.2.4
+surface
+#!parameters:
+#!variables:
+varying	vector	NN
+varying	float	r
+varying	float	x
+varying	float	y
+varying	float	where
+varying	vector	temporary_0
+varying	float	temporary_1
+varying	float	temporary_2
+varying	float	temporary_3
+varying	float	temporary_4
+varying	vector	temporary_5
+varying	vector	temporary_6
+varying	vector	temporary_7
+varying	vector	temporary_8
+uniform	vector	temporary_9
+varying	vector	temporary_10
+varying	vector	temporary_11
+varying	vector	temporary_12
+#!Init:
+	return            
+#!Code:
+	faceforward	("v=vvv")  temporary_0  N  I  N 
+	normalize	("v=v")  NN  temporary_0 
+	vufloat            r 0.5
+	subff             	x s r
+	subff             	y t r
+	mulff             	temporary_1 y y
+	mulff             	temporary_2 x x
+	addff             	where temporary_1 temporary_2
+	vufloat            temporary_2 1
+	mulff             	temporary_4 r r
+	filterstep	("f=ff")  temporary_3  temporary_4  where 
+	subff             	temporary_1 temporary_2 temporary_3
+	vfromf            	temporary_0 temporary_1
+	mulvv             	Oi Os temporary_0
+	mulvv             	temporary_0 Oi Cs
+	vfromf            	temporary_9 0.65
+	vuvector           temporary_8 temporary_9
+	diffuse	("c=n")  temporary_10  NN 
+	mulvv             	temporary_7 temporary_8 temporary_10
+	vfromf            	temporary_9 0.15
+	vuvector           temporary_10 temporary_9
+	negv              	temporary_12 NN
+	diffuse	("c=n")  temporary_11  temporary_12 
+	mulvv             	temporary_8 temporary_10 temporary_11
+	addvv             	temporary_6 temporary_7 temporary_8
+	vfromf            	temporary_9 0.15
+	vuvector           temporary_7 temporary_9
+	addvv             	temporary_5 temporary_6 temporary_7
+	mulvv             	Ci temporary_0 temporary_5
+	return            

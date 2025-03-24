@@ -1,0 +1,66 @@
+#!version 2.2.4
+surface
+#!parameters:
+varying	float	width	=	0
+#!variables:
+varying	vector	NN
+uniform	float	flag
+varying	float	temporary_0
+varying	float	r
+varying	float	x
+varying	float	y
+varying	float	spacescale
+varying	vector	Ndisp
+varying	vector	PP
+varying	float	temporary_1
+varying	float	temporary_2
+varying	float	temporary_3
+varying	vector	temporary_4
+varying	vector	temporary_5
+varying	vector	temporary_6
+varying	vector	temporary_7
+uniform	vector	temporary_8
+varying	vector	temporary_9
+#!Init:
+	return            
+#!Code:
+	normalize	("v=v")  NN  N 
+	if                	width #!Label6
+	moveff            	flag 1
+#!Label6:
+	else              	#!Label5
+	moveff            	flag 0
+#!Label5:
+	endif             
+	vufloat            temporary_0 flag
+	if                	temporary_0 #!Label7
+	vufloat            temporary_1 0.5
+	mulff             	r temporary_1 width
+	subff             	x s r
+	mulff             	temporary_2 r r
+	mulff             	temporary_3 x x
+	subff             	temporary_1 temporary_2 temporary_3
+	sqrt	("f=f")  y  temporary_1 
+	transform	("p=Sp")  temporary_4  "object"  NN 
+	length	("f=v")  spacescale  temporary_4 
+	vufloat            temporary_3 1e-6
+	max	("f=ff")  temporary_2  spacescale  temporary_3 
+	divff             	temporary_1 r temporary_2
+	vfromf            	temporary_4 temporary_1
+	mulvv             	Ndisp NN temporary_4
+	addvv             	PP P Ndisp
+	calculatenormal	("p=p")  temporary_4  PP 
+	normalize	("v=v")  NN  temporary_4 
+#!Label7:
+	endif             
+	movevv            	Oi Os
+	mulvv             	temporary_4 Oi Cs
+	vfromf            	temporary_8 0.8
+	vuvector           temporary_7 temporary_8
+	diffuse	("c=n")  temporary_9  NN 
+	mulvv             	temporary_6 temporary_7 temporary_9
+	vfromf            	temporary_8 0.15
+	vuvector           temporary_7 temporary_8
+	addvv             	temporary_5 temporary_6 temporary_7
+	mulvv             	Ci temporary_4 temporary_5
+	return            

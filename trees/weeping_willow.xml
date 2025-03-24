@@ -13,7 +13,7 @@
     <param name='Flare' value='0.75'/>
     <param name='Lobes' value='9'/>
     <param name='LobeDepth' value='0.03'/>
-    <param name='Smooth' value='0.5'/>
+    <param name='Smooth' value='0.0'/>
     <param name='Leaves' value='10'/>
     <param name='LeafShape' value='disc2'/>
     <param name='LeafScale' value='0.12'/>
